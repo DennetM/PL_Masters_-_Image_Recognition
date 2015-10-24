@@ -11,7 +11,7 @@ public class ReadDatabase {
 
 	//readLabel - similar to the above, instead we read labels only.
 	//name - same as above, since we want to read the file specified by us.
-	public static void readLabel(String filename) throws IOException{
+	public static int[] readLabel(String filename, int num) throws IOException{
 		//Start with the basic operation to open the file.
 		FileInputStream File = null;
 		String filepath = filename;
@@ -28,19 +28,20 @@ public class ReadDatabase {
 		System.out.println("Item Number: "+itemNumber);
 		
 		//Read the labels one by one and slap them into an array of ints.
-		int[] labels = new int[itemNumber];
-		for (int i=0; i<itemNumber; i++){
+		int[] labels = new int[num];
+		for (int i=0; i<num; i++){
 			labels[i] = File.read();
 			//Check(careful!):
 			//if (i<99) System.out.println("Lavel "+i+": "+labels[i]);
 		}
 		File.close();
+		return labels;
 	}
 	
 	
 	//readImage - reads the images from an IDX file, simple as that.
 	//name - a String with the filename, so that we can dynamically flip the class to read whatever file we need.
-	public static void readImage(String filename) throws IOException{
+	public static int[][][] readImage(String filename, int num) throws IOException{
 		
 		FileInputStream File = null;
 		String filepath = filename;
@@ -62,8 +63,8 @@ public class ReadDatabase {
 		System.out.println("The standard image is a matrix sized "+rowNumber+"x"+columnNumber);
 		
 		//Compose our array of images. The pixels are valued from 0 to 255, each in 1 byte data storage.
-		int[][][]images = new int[itemNumber][rowNumber][columnNumber];
-		for(int i=0; i<itemNumber;i++){
+		int[][][]images = new int[num][rowNumber][columnNumber];
+		for(int i=0; i<num;i++){
 			for(int k=0; k<columnNumber; k++){
 				for(int r=0; r<rowNumber; r++){
 					images[i][r][k] = File.read();
@@ -73,5 +74,6 @@ public class ReadDatabase {
 			}
 		}
 		File.close();
+		return images;
 	}
 }

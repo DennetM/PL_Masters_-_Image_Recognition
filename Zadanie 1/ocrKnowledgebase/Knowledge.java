@@ -6,10 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import ocrRecognizer.DataExtractor;
+
 public class Knowledge {
 
 	//Variables
-	int knowledgeSize = 10;
+	private int size;
 	
 	//Our knowledgebase, in essence the entire training set inserted in and categorized based on feature.
 	//It's a long-ass 2D matrix, with the 0th layer being just the number while the 1th layer being a bit more descriptive...
@@ -18,22 +20,25 @@ public class Knowledge {
 	// 2 - second feature of the top box
 	// 3 - first, second box
 	// ...AND SO ON AND SO FORTH. Essentially, the 2nd array has to be the size of [Features]+1.
-	double[][] knowledgeBase = new double[knowledgeSize][7];
+	public double[][] knowledgeBase;
 	
 	//The matchbase, essentially a much smaller copy of the database that's initialized during program start.
 	//We'll load in our variables here with the index values being set to something entirely space.
 	//The pattern of the fields is the same, though the ID field is not strictly locked to 60k examples.
-	double[][] matchBase;
-	int size;
+	public double[][] matchBase;
+	
+	DataExtractor extractor;
 	
 	//Constructor
 	//Constructs the Knowledgebase while setting the size of the array of pictures we want to match.
-	public Knowledge(int s){
+	public Knowledge(int s) throws IOException{
 		this.size = s;
+		this.knowledgeBase = new double[size][7];
 		this.matchBase = new double[size][7];
+		this.extractor = new DataExtractor(size);
 		
 		//Prepare the arrays, setting _EVERY_ value to 0 just so that we're sure we're not dancing with random values.
-		for(int i=0;i<knowledgeSize;i++){
+		for(int i=0;i<size;i++){
 			for(int ft=0; ft<7; ft++){
 				this.knowledgeBase[i][ft] = 0;
 			}
@@ -47,12 +52,25 @@ public class Knowledge {
 	}
 	
 	//Functions
+	//gatherKnowledge - this function will iterate itself through the table, calling our DataExtractor class to fill in the blanks.
+	public void gatherKnowledge(){
+		//Run through everything.
+		for(int i=0; i<size; i++){
+			for(int ft=0; ft<7; ft++){
+				//If our feature is equal zero, i.e. it's the index, gather it.
+				if (ft==0) this.knowledgeBase[i][ft] = extractor.extractLabel(i);
+				//If our feature has an index (1,2,3,4,5,6), extract the feature of that index.
+				else this.knowledgeBase[i][ft] = extractor.extractFeature(i, ft);
+			}
+		}
+		
+	}
 	//saveKnowledge - this function will write a simple text file with the entire knowledgebase printed inside of it.
 	//The file lacks any sort of special and funky formatting since it's always set for 60k iterations of a 4-D matrix formula.
 	public void saveKnowledge(String filename) throws IOException{
 		File file = new File(filename);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-		for(int i=0;i<knowledgeSize;i++){
+		for(int i=0;i<size;i++){
 			for(int ft=0; ft<7;ft++){
 				writer.write(Double.toString(this.knowledgeBase[i][ft]));
 				writer.write(" ");
@@ -70,7 +88,7 @@ public class Knowledge {
 		Scanner scan = new Scanner(file);
 		
 		while(scan.hasNext()){
-			for(int i=0; i<knowledgeSize; i++){
+			for(int i=0; i<size; i++){
 				for(int ft=0; ft<7; ft++){
 					this.knowledgeBase[i][ft] = Double.parseDouble(scan.next());
 					System.out.println("Scanned: "+this.knowledgeBase[i][ft]);

@@ -10,8 +10,9 @@ public class main {
 		//ReadDatabase.readLabel("labels.idx1-ubyte");
 		//ReadDatabase.readImage("images.idx3-ubyte");
 		Knowledge k = new Knowledge(100);
+		k.gatherKnowledge();
 		//k.saveKnowledge("testfile.txt");
-		k.readKnowledge("testfile.txt");
+		//k.readKnowledge("testfile.txt");
 	}
 
 }
