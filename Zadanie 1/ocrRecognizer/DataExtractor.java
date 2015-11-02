@@ -39,10 +39,8 @@ public class DataExtractor {
 		
 	}
 	
+	//TODO: Restructurize this.
 	//extractFeature - extracts a single feature from the image, depending on the modifier.
-	//int mod - the modifier extracts a numbered feature, as described in Knowledge->int[][] knowledgebase comment.
-	//int index - the index of the image we're extracting from, should be same as label index.
-	//This function is to be used in a loop.
 	public double extractFeature(int index, int mod){
 		//First, load the image
 		for(int k=0; k<28; k++){
@@ -53,60 +51,26 @@ public class DataExtractor {
 		
 		//Switch for extracting the data depending on the sector.
 		//Sector 1, pixel density, i.e how many white spaces in picture?.
-		if (mod == 1){
-			int countTotes = 0;
-			int countWhite = 0;
-			for(int k=0;k<28;k++){
-				for(int r=0;r<9;r++){
-					countTotes += 1;
-					if(this.img[r][k] == 0) countWhite += 1;
-				}
-			}			
-			double density = countWhite / countTotes;
-			return density;
-		}
-		//Sector 1, ???
-		if (mod == 2){
-			return 0.0;
-		}
-		//Sector 2, pixel density.
-		if (mod == 3){
-			int countTotes = 0;
-			int countWhite = 0;
-			for(int k=0;k<28;k++){
-				for(int r=9;r<18;r++){
-					countTotes += 1;
-					if(this.img[r][k] == 0) countWhite += 1;
-				}
-			}			
-			double density = countWhite / countTotes;
-			return density;
-		}
-		//Sector 2, ???
-		if (mod == 4){
-			return 0.0;
-		}
-		//Sector 3, pixel density.
-		if (mod == 5){
-			int countTotes = 0;
-			int countWhite = 0;
-			for(int k=0;k<28;k++){
-				for(int r=18;r<28;r++){
-					countTotes += 1;
-					if(this.img[r][k] == 0) countWhite += 1;
-				}
-			}			
-			double density = countWhite / countTotes;
-			return density;
-		}
-		//Sector 3, ???
-		if (mod == 6){
-			return 0.0;
-		}
+		
 		
 		//If no valid option selected, zero value.
 		//So be careful with this!
-		else return 0.0;
+		//else
+		return 0.0;
+	}
+	
+	//extractDensity - extracts the density data from a certain range
+	private double extractDensity(int xs, int xe, int ys, int ye){
+		int countTotes = 0;
+		int countWhite = 0;
+		for(int i=xs; i<xe; i++){
+			for(int j = ys; j<ye; j++){
+				countTotes += 1;
+				if(this.img[i][j] == 0) countWhite += 1;
+			}
+		}
+		double density = countWhite / countTotes;
+		return density;
 	}
 	
 	

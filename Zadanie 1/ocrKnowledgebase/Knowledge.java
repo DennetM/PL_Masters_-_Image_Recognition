@@ -27,6 +27,7 @@ public class Knowledge {
 	//The pattern of the fields is the same, though the ID field is not strictly locked to 60k examples.
 	public double[][] matchBase;
 	
+	//TODO: Remove the direct nesting, write a function that'll send data back and forth.
 	DataExtractor extractor;
 	
 	//Constructor
