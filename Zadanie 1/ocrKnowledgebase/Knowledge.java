@@ -27,26 +27,23 @@ public class Knowledge {
 	//The pattern of the fields is the same, though the ID field is not strictly locked to 60k examples.
 	public double[][] matchBase;
 	
-	//TODO: Remove the direct nesting, write a function that'll send data back and forth.
-	DataExtractor extractor;
 	
 	//Constructor
 	//Constructs the Knowledgebase while setting the size of the array of pictures we want to match.
 	public Knowledge(int s) throws IOException{
 		this.size = s;
-		this.knowledgeBase = new double[size][7];
-		this.matchBase = new double[size][7];
-		this.extractor = new DataExtractor(size);
+		this.knowledgeBase = new double[size][17];
+		this.matchBase = new double[size][17];
 		
 		//Prepare the arrays, setting _EVERY_ value to 0 just so that we're sure we're not dancing with random values.
 		for(int i=0;i<size;i++){
-			for(int ft=0; ft<7; ft++){
+			for(int ft=0; ft<17; ft++){
 				this.knowledgeBase[i][ft] = 0;
 			}
 		}
 		//Essentially the same algorithm, instead working with a different ID iterator so we won't go out of bounds.
 		for(int i=0; i<size; i++){
-			for(int ft=0; ft<7; ft++){
+			for(int ft=0; ft<17; ft++){
 				this.matchBase[i][ft] = 0;
 			}
 		}
@@ -54,14 +51,16 @@ public class Knowledge {
 	
 	//Functions
 	//gatherKnowledge - this function will iterate itself through the table, calling our DataExtractor class to fill in the blanks.
-	public void gatherKnowledge(){
+	public void gatherKnowledge(DataExtractor extractor){
 		//Run through everything.
 		for(int i=0; i<size; i++){
-			for(int ft=0; ft<7; ft++){
+			for(int ft=0; ft<17; ft++){
 				//If our feature is equal zero, i.e. it's the index, gather it.
 				if (ft==0) this.knowledgeBase[i][ft] = extractor.extractLabel(i);
 				//If our feature has an index (1,2,3,4,5,6), extract the feature of that index.
 				else this.knowledgeBase[i][ft] = extractor.extractFeature(i, ft);
+				
+				System.out.println("For label ["+this.knowledgeBase[i][0]+"], index#"+i+", extracted feature index#"+ft+" was: "+this.knowledgeBase[i][ft]);
 			}
 		}
 		
@@ -72,7 +71,7 @@ public class Knowledge {
 		File file = new File(filename);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 		for(int i=0;i<size;i++){
-			for(int ft=0; ft<7;ft++){
+			for(int ft=0; ft<17;ft++){
 				writer.write(Double.toString(this.knowledgeBase[i][ft]));
 				writer.write(" ");
 			}
@@ -90,7 +89,7 @@ public class Knowledge {
 		
 		while(scan.hasNext()){
 			for(int i=0; i<size; i++){
-				for(int ft=0; ft<7; ft++){
+				for(int ft=0; ft<17; ft++){
 					this.knowledgeBase[i][ft] = Double.parseDouble(scan.next());
 					System.out.println("Scanned: "+this.knowledgeBase[i][ft]);
 				}
