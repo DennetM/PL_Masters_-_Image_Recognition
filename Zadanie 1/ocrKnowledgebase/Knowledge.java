@@ -12,6 +12,7 @@ public class Knowledge {
 
 	//Variables
 	private int size;
+	private int sizeMatch;
 	
 	//Our knowledgebase, in essence the entire training set inserted in and categorized based on feature.
 	//It's a long-ass 2D matrix, with the 0th layer being just the number while the 1th layer being a bit more descriptive...
@@ -30,8 +31,9 @@ public class Knowledge {
 	
 	//Constructor
 	//Constructs the Knowledgebase while setting the size of the array of pictures we want to match.
-	public Knowledge(int s) throws IOException{
+	public Knowledge(int s, int sm) throws IOException{
 		this.size = s;
+		this.sizeMatch = sm;
 		this.knowledgeBase = new double[size][17];
 		this.matchBase = new double[size][17];
 		
@@ -42,7 +44,7 @@ public class Knowledge {
 			}
 		}
 		//Essentially the same algorithm, instead working with a different ID iterator so we won't go out of bounds.
-		for(int i=0; i<size; i++){
+		for(int i=0; i<sizeMatch; i++){
 			for(int ft=0; ft<17; ft++){
 				this.matchBase[i][ft] = 0;
 			}

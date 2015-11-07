@@ -20,7 +20,7 @@ public class main {
 		int testSize = 100;
 		
 		//Spawn our Knowledgebase.
-		Knowledge testKnowledgebase = new Knowledge(testSize);
+		Knowledge testKnowledgebase = new Knowledge(testSize, 0);
 		
 		//Spawn our data extractor.
 		DataExtractor testExtractor = new DataExtractor(testSize);
