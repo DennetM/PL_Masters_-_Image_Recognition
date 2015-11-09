@@ -14,7 +14,7 @@ public class main {
 		//Testing the kNN Algorithm, also the proper program loop.
 		
 		//Size setting.
-		int knowledgeSize = 30000;
+		int knowledgeSize = 60000;
 		int matchSize = 100;
 		
 		//Spawn the knowledgebase.
