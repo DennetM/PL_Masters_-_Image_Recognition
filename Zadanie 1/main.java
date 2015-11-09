@@ -14,7 +14,7 @@ public class main {
 		//Testing the kNN Algorithm, also the proper program loop.
 		
 		//Size setting.
-		int knowledgeSize = 2500;
+		int knowledgeSize = 30000;
 		int matchSize = 100;
 		
 		//Spawn the knowledgebase.
@@ -35,7 +35,7 @@ public class main {
 		database.gatherKnowledge(extrMatch, "matchbase");
 		
 		//All that done, let's see how effective are we.
-		database.testNumbers(4);
+		database.testNumbers(8);
 		
 		/*Success.
 		//Initial read-extract-write test.
