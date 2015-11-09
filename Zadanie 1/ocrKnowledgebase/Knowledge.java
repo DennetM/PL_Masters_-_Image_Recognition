@@ -92,7 +92,7 @@ public class Knowledge {
 		
 		//Fly through the entire matchBase, going through each one.
 		for (int i=0; i<this.sizeMatch; i++){
-			double[][] distance = new double[this.size][2];
+			double[][] distance = new double[this.size][1];
 			//For each one, calculate the relative distance between itself and EVERY member of the knowledgebase.
 			//We're using the MANHATTAN METRIC to calculate the distance (aka. pl. "Metryka Uliczna").
 			for(int s=0; s<this.size; s++){
@@ -102,7 +102,6 @@ public class Knowledge {
 				}
 				distance[s][0] = dstVal;
 				distance[s][1] = this.knowledgeBase[s][0];
-				//System.out.println("Raw Order: "+distance[s][0]+" | "+distance[s][1]);
 			}
 			
 			//When we have our distances, we sort them by size, from the closest to the farthest.
@@ -111,26 +110,19 @@ public class Knowledge {
 			        return Double.compare(a[0], b[0]);
 			    }
 			});
-			
 			//And we pick the k closest ones.			
 			//Be democratic. Count the number of each labels appearing.
-			double[] labels = new double[10];
-			Arrays.fill(labels, 0.0);
+			double[] labels = new double[9];
+			for(int clr=0;clr<9;clr++){
+				labels[clr]=0;
+			}
 			for(int pick=0; pick<k; pick++){
 				labels[(int)distance[pick][1]] += 1;
 			}
+			
 			//And assign the most common label.
-			int memIndex = 0;
-			double memValue = 0;
-			for(int pickHigh=0; pickHigh<10; pickHigh++){
-				if (labels[pickHigh] >= memValue){
-					memValue=labels[pickHigh];
-					memIndex = pickHigh;
-				}
-			}
-
+			Arrays.sort(labels);
 			//Now check if the label is the same as the label we know is true.
-			if ((double)memIndex == this.matchBase[i][0]) successValue++;
 		}
 		
 		
