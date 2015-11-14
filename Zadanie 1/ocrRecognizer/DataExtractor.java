@@ -60,25 +60,61 @@ public class DataExtractor {
 		//The 'mod' is responsible for the sector, starting at sector 1 (top left) and finishing at sector 17 (bottom right).
 		//To get 16 sectors, we split the image into equal parts, 4 by 4. Specifically: 0-6, 7-14, 15-21, 22-28.
 		//The sectors advance from left to right, top to bottom, in that order.
-		if (mod==1) return extractDensity(0, 6, 0, 6, this.img);
-		if (mod==2) return extractDensity(7, 14, 0, 6, this.img);
-		if (mod==3) return extractDensity(15, 21, 0, 6, this.img);
-		if (mod==4) return extractDensity(22, 28, 0, 6, this.img);
+		if (mod==1) return extractDensity(0, 3, 0, 3, this.img);
+		if (mod==2) return extractDensity(3, 7, 0, 3, this.img);
+		if (mod==3) return extractDensity(7, 11, 0, 3, this.img);
+		if (mod==4) return extractDensity(11, 15, 0, 3, this.img);
+		if (mod==5) return extractDensity(15, 19, 0, 3, this.img);
+		if (mod==6) return extractDensity(19, 23, 0, 3, this.img);
+		if (mod==7) return extractDensity(23, 27, 0, 3, this.img);
 		
-		if (mod==5) return extractDensity(0, 6, 7, 14, this.img);
-		if (mod==6) return extractDensity(7, 14, 7, 14, this.img);
-		if (mod==7) return extractDensity(15, 21, 7, 14, this.img);
-		if (mod==8) return extractDensity(22, 28, 7, 14, this.img);
+		if (mod==8) return extractDensity(0, 3, 3, 7, this.img);
+		if (mod==9) return extractDensity(3, 7, 3, 7, this.img);
+		if (mod==10) return extractDensity(7, 11, 3, 7, this.img);
+		if (mod==11) return extractDensity(11, 15, 3, 7, this.img);
+		if (mod==12) return extractDensity(15, 19, 3, 7, this.img);
+		if (mod==13) return extractDensity(19, 23, 3, 7, this.img);
+		if (mod==14) return extractDensity(23, 27, 3, 7, this.img);
 		
-		if (mod==9) return extractDensity(0, 6, 15, 21, this.img);
-		if (mod==10) return extractDensity(7, 14, 15, 21, this.img);
-		if (mod==11) return extractDensity(15, 21, 15, 21, this.img);
-		if (mod==12) return extractDensity(22, 28, 15, 21, this.img);
+		if (mod==15) return extractDensity(0, 3, 7, 11, this.img);
+		if (mod==16) return extractDensity(3, 7, 7, 11, this.img);	
+		if (mod==17) return extractDensity(7, 11, 7, 11, this.img);
+		if (mod==18) return extractDensity(11, 15, 7, 11, this.img);
+		if (mod==19) return extractDensity(15, 19, 7, 11, this.img);
+		if (mod==20) return extractDensity(19, 23, 7, 11, this.img);
+		if (mod==21) return extractDensity(23, 27, 7, 11, this.img);
 		
-		if (mod==13) return extractDensity(0, 6, 22, 28, this.img);
-		if (mod==14) return extractDensity(7, 14, 22, 28, this.img);
-		if (mod==15) return extractDensity(15, 21, 22, 28, this.img);
-		if (mod==16) return extractDensity(22, 28, 22, 28, this.img);
+		if (mod==22) return extractDensity(0, 3, 11, 15, this.img);
+		if (mod==23) return extractDensity(3, 7, 11, 15, this.img);
+		if (mod==24) return extractDensity(7, 11, 11, 15, this.img);
+		if (mod==25) return extractDensity(11, 15, 11, 15, this.img);
+		if (mod==26) return extractDensity(15, 19, 11, 15, this.img);
+		if (mod==27) return extractDensity(19, 23, 11, 15, this.img);
+		if (mod==28) return extractDensity(23, 27, 11, 15, this.img);
+		
+		if (mod==29) return extractDensity(0, 3, 15, 19, this.img);
+		if (mod==30) return extractDensity(3, 7, 15, 19, this.img);
+		if (mod==31) return extractDensity(7, 11, 15, 19, this.img);
+		if (mod==32) return extractDensity(11, 15, 15, 19, this.img);
+		if (mod==33) return extractDensity(15, 19, 15, 19, this.img);
+		if (mod==34) return extractDensity(19, 23, 15, 19, this.img);
+		if (mod==35) return extractDensity(23, 27, 15, 19, this.img);
+		
+		if (mod==36) return extractDensity(0, 3, 19, 23, this.img);
+		if (mod==37) return extractDensity(3, 7, 19, 23, this.img);
+		if (mod==38) return extractDensity(7, 11, 19, 23, this.img);
+		if (mod==39) return extractDensity(11, 15, 19, 23, this.img);
+		if (mod==40) return extractDensity(15, 19, 19, 23, this.img);
+		if (mod==41) return extractDensity(19, 23, 19, 23, this.img);
+		if (mod==42) return extractDensity(23, 27, 19, 23, this.img);
+		
+		if (mod==43) return extractDensity(0, 3, 23, 27, this.img);
+		if (mod==44) return extractDensity(3, 7, 23, 27, this.img);
+		if (mod==45) return extractDensity(7, 11, 23, 27, this.img);
+		if (mod==46) return extractDensity(11, 15, 23, 27, this.img);
+		if (mod==47) return extractDensity(15, 19, 23, 27, this.img);
+		if (mod==48) return extractDensity(19, 23, 23, 27, this.img);	
+		if (mod==49) return extractDensity(23, 27, 23, 27, this.img);
 		
 		//If we got the wrong index, return 0.
 		else return 0.0;

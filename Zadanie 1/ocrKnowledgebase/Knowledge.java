@@ -35,18 +35,18 @@ public class Knowledge {
 	public Knowledge(int s, int sm) throws IOException{
 		this.size = s;
 		this.sizeMatch = sm;
-		this.knowledgeBase = new double[size][17];
-		this.matchBase = new double[sizeMatch][17];
+		this.knowledgeBase = new double[size][50];
+		this.matchBase = new double[sizeMatch][50];
 		
 		//Prepare the arrays, setting _EVERY_ value to 0 just so that we're sure we're not dancing with random values.
 		for(int i=0;i<size;i++){
-			for(int ft=0; ft<17; ft++){
+			for(int ft=0; ft<50; ft++){
 				this.knowledgeBase[i][ft] = 0;
 			}
 		}
 		//Essentially the same algorithm, instead working with a different ID iterator so we won't go out of bounds.
 		for(int i=0; i<sizeMatch; i++){
-			for(int ft=0; ft<17; ft++){
+			for(int ft=0; ft<50; ft++){
 				this.matchBase[i][ft] = 0;
 			}
 		}
@@ -59,7 +59,7 @@ public class Knowledge {
 		if (mode.equals("database")){
 			//Run through everything.
 			for(int i=0; i<size; i++){
-				for(int ft=0; ft<17; ft++){
+				for(int ft=0; ft<50; ft++){
 					//If our feature is equal zero, i.e. it's the index, gather it.
 					if (ft==0) this.knowledgeBase[i][ft] = extractor.extractLabel(i);
 					//If our feature has an index (1,2,3,4,5,6), extract the feature of that index.
@@ -72,7 +72,7 @@ public class Knowledge {
 		if (mode.equals("matchbase")){
 			//We sorta just copied the above but changed a few things to make it work.
 			for(int i=0; i<sizeMatch; i++){
-				for(int ft=0; ft<17; ft++){
+				for(int ft=0; ft<50; ft++){
 					//If our feature is equal zero, i.e. it's the index, gather it.
 					if (ft==0) this.matchBase[i][ft] = extractor.extractLabel(i);
 					//If our feature has an index (1,2,3,4,5,6), extract the feature of that index.
@@ -97,7 +97,7 @@ public class Knowledge {
 			//We're using the MANHATTAN METRIC to calculate the distance (aka. pl. "Metryka Uliczna").
 			for(int s=0; s<this.size; s++){
 				double dstVal = 0;
-				for(int ft=1; ft<17; ft++){
+				for(int ft=1; ft<50; ft++){
 					dstVal+=Math.abs(this.matchBase[i][ft] - this.knowledgeBase[s][ft]);
 				}
 				distance[s][0] = dstVal;
@@ -145,7 +145,7 @@ public class Knowledge {
 		File file = new File(filename);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 		for(int i=0;i<size;i++){
-			for(int ft=0; ft<17;ft++){
+			for(int ft=0; ft<50;ft++){
 				writer.write(Double.toString(this.knowledgeBase[i][ft]));
 				writer.write(" ");
 			}
@@ -162,7 +162,7 @@ public class Knowledge {
 		
 		while(scan.hasNext()){
 			for(int i=0; i<size; i++){
-				for(int ft=0; ft<17; ft++){
+				for(int ft=0; ft<50; ft++){
 					this.knowledgeBase[i][ft] = Double.parseDouble(scan.next());
 					System.out.println("Scanned: "+this.knowledgeBase[i][ft]);
 				}
