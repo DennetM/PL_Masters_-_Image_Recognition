@@ -1,8 +1,6 @@
 import java.io.IOException;
 
-import ocrKnowledgebase.Knowledge;
-import ocrReadWrite.ReadDatabase;
-import ocrRecognizer.DataExtractor;
+import ocrReadWrite.ReadImage;
 
 
 //For now, we just debug stuff.
@@ -10,7 +8,7 @@ public class main {
 	
 	public static void main(String[] args) throws IOException{
 		
-		
+		/*
 		//Testing the kNN Algorithm, also the proper program loop.
 		
 		//Size setting.
@@ -36,6 +34,7 @@ public class main {
 		
 		//All that done, let's see how effective are we.
 		database.testNumbers(8);
+		*/
 		
 		/*Success.
 		//Initial read-extract-write test.
