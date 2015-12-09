@@ -87,5 +87,32 @@ public class FFT {
 		}
 		System.out.println("Finished FFT by rows. Finished FFT.");
 	}
+	
+	public void flipFFT(){
+		int half = powerIndex/2;
+		
+		Complex[][]temp = new Complex[powerIndex][powerIndex];
+		
+		for(int i=0;i<powerIndex;i++){
+			for(int j=0;j<powerIndex;j++){
+				//First slice - i<= half and j<=half.
+				//Swap the elements of that slice with the 4th slice.
+				if(i<half && j<half){
+					temp[i][j] = FFTImage[i][j];
+					FFTImage[i][j] = FFTImage[half+i][half+j];
+					FFTImage[half+i][half+j] = temp[i][j];
+					temp[i][j] = Complex.ZERO; //Purge it just to be sure.
+				}
+				//Second slice - i>half and j<=half.
+				//Swap these with the 3rd slice - i<=half and j>half.
+				if(i>half && j<half){
+					temp[i][j] = FFTImage[i][j];
+					FFTImage[i][j] = FFTImage[i-half][j+half];
+					FFTImage[i-half][half+j] = temp[i][j];
+					temp[i][j] = Complex.ZERO;
+				}
+			}
+		}
+	}
 
 }

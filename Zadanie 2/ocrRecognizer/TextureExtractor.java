@@ -47,8 +47,12 @@ public class TextureExtractor {
 		String type = determineType(imgNumber+1);
 		//Step 2. Access the image specified by the image number (and it's type).
 		//Prepare the file identifier based on the number.
-		String magicNumber = Integer.toString(imgNumber+1);
-		String file = ("000" + magicNumber).substring(magicNumber.length());
+		int magicNumber = imgNumber+1;
+		if(type.equals("salt")) magicNumber -= this.linenLimit;
+		if(type.equals("straw")) magicNumber -= this.saltLimit;
+		if(type.equals("wood")) magicNumber -= this.strawLimit;
+		String mag = Integer.toString(magicNumber);
+		String file = ("000" + magicNumber).substring(mag.length());
 		//Access the file.
 		int[][] imgRaw = ReadImage.read(type, type+file+".bmp");
 		double[][] imgMatrix = new double[64][64];
@@ -102,8 +106,12 @@ public class TextureExtractor {
 		String type = determineType(imgNumber+1);
 		//Step 2. Access the image specified by the image number (and it's type).
 		//Prepare the file identifier based on the number.
-		String magicNumber = Integer.toString(imgNumber+1);
-		String file = ("000" + magicNumber).substring(magicNumber.length());
+		int magicNumber = imgNumber+1;
+		if(type.equals("salt")) magicNumber -= this.linenLimit;
+		if(type.equals("straw")) magicNumber -= this.saltLimit;
+		if(type.equals("wood")) magicNumber -= this.strawLimit;
+		String mag = Integer.toString(magicNumber);
+		String file = ("000" + magicNumber).substring(mag.length());
 		//Access the file.
 		int[][] imgRaw = ReadImage.read(type, type+file+".bmp");
 		
