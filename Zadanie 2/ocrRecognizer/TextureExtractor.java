@@ -95,4 +95,22 @@ public class TextureExtractor {
 		}
 		return feat;
 	}
+	
+	//getFFTFeature - essentially a different flavour of the above, wherein we instead of using GLCM compute the
+	//FFT spectrum of the image and gather information from therein.
+	public double getFFTFeature(int imgNumber, int FeatNumber) throws IOException{
+		//Step 1. Determine what sort of image we're dealing with.
+		String type = determineType(imgNumber+1);
+		//Step 2. Access the image specified by the image number (and it's type).
+		//Prepare the file identifier based on the number.
+		String magicNumber = Integer.toString(imgNumber+1);
+		String file = ("000" + magicNumber).substring(magicNumber.length());
+		//Access the file.
+		int[][] imgRaw = ReadImage.read(type, type+file+".bmp");
+		
+		//Step 3. Perform the Fast Fourier Transform on the image so we can gather it's features.
+		
+		
+		return 0.0;
+	}
 }

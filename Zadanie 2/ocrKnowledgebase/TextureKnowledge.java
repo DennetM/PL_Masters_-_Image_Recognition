@@ -63,15 +63,15 @@ public class TextureKnowledge {
 				}
 			}
 		}
-		/*
+		
 		if(mode.equals("FFT")){
 			for(int i=0; i<totalSize; i++){
 				for(int j=0; j<this.FFTFeatures; i++){
-					else this.fftKnowledgebase[i][j] = extract.getFFTFeature(i, j);
+					this.fftKnowledgebase[i][j] = extract.getFFTFeature(i, j);
 				}
 			}
 		}
-		*/
+		
 		else System.out.println("Wrong mode!");
 	}
 	
