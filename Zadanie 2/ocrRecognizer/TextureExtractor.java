@@ -108,7 +108,8 @@ public class TextureExtractor {
 		int[][] imgRaw = ReadImage.read(type, type+file+".bmp");
 		
 		//Step 3. Perform the Fast Fourier Transform on the image so we can gather it's features.
-		
+		FFT finalFantasy = new FFT(imgRaw, 64, 64);
+		finalFantasy.FFTStandard();
 		
 		return 0.0;
 	}
