@@ -2,7 +2,6 @@ package ocrRecognizer;
 
 import java.io.IOException;
 
-import ocrKnowledgebase.GLCM;
 import ocrReadWrite.ReadImage;
 
 //The extractor class, which will gather features of images one by one and prepare them to be sent to Knowledge class.

@@ -1,4 +1,4 @@
-package ocrKnowledgebase;
+package ocrRecognizer;
 
 /**
  * Copied from the NIST Big-Data-Project into Versus-transformations for the GLCM Transformation
