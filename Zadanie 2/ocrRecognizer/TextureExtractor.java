@@ -2,6 +2,7 @@ package ocrRecognizer;
 
 import java.io.IOException;
 
+import ocrKnowledgebase.GLCM;
 import ocrReadWrite.ReadImage;
 
 //The extractor class, which will gather features of images one by one and prepare them to be sent to Knowledge class.
@@ -32,7 +33,7 @@ public class TextureExtractor {
 	private String determineType(int num){
 		String type = null;
 		
-		if(num<this.linenLimit) type="linen";
+		if(num<=this.linenLimit) type="linen";
 		if(num>this.linenLimit && num<=this.saltLimit) type="salt";
 		if(num>this.saltLimit && num<=this.strawLimit) type="straw";
 		if(num>this.strawLimit && num<=this.woodLimit) type="wood";
@@ -44,25 +45,54 @@ public class TextureExtractor {
 	//Features increase normally from 0 (label) to the last feature. Labels/Types increase based on the limits.
 	public double getFlatFeature(int imgNumber, int featNumber) throws IOException{
 		//Step 1. Determine what sort of image we're dealing with.
-		String type = determineType(imgNumber);
+		String type = determineType(imgNumber+1);
 		//Step 2. Access the image specified by the image number (and it's type).
 		//Prepare the file identifier based on the number.
-		String magicNumber = Integer.toString(imgNumber);
+		String magicNumber = Integer.toString(imgNumber+1);
 		String file = ("000" + magicNumber).substring(magicNumber.length());
 		//Access the file.
-		int[][] img = ReadImage.read(type, type+file+".bmp");
+		int[][] imgRaw = ReadImage.read(type, type+file+".bmp");
+		double[][] imgMatrix = new double[64][64];
 		
-		//Step 3. Determine the feature we want to push onward and prepare to dump it on.
+		//Step 3. Prepare the Grey-Level Co-Occurence (GLCM) Matrix, from which we'll extract the data for the greyscale texture.
+		for(int i=0; i<64; i++){
+			for(int j=0; j<64; j++){
+				imgMatrix[i][j] = (double) imgRaw[i][j];
+			}
+		}
+		//Thank you Mr. Julien Amelot!
+		GLCM glcm = GLCM.createGLCM(imgMatrix, 1, 1, 10, false, true, 1.0, 10.0);
+		
+		//Step 4. Determine the feature we want to push onward and prepare to dump it on.
 		double feat = 0.0;
 		if(featNumber==0){
+			//Label
 			if(type.equals("linen")) feat = 0.0;
 			if(type.equals("salt")) feat = 1.0;
 			if(type.equals("straw")) feat = 2.0;
 			if(type.equals("wood")) feat = 3.0;
+			System.out.println("Label: "+feat);
 		}
-		
-		
-
+		if(featNumber==1){
+			//Contrast
+			feat = glcm.computeContrast();
+			System.out.println("Contrast value: "+feat);
+		}
+		if(featNumber==2){
+			//Correlation
+			feat = glcm.computeCorrelation();
+			System.out.println("Correlation value: "+feat);
+		}
+		if(featNumber==3){
+			//Energy
+			feat = glcm.computeEnergy();
+			System.out.println("Energy value: "+feat);
+		}
+		if(featNumber==4){
+			//Homogenity
+			feat = glcm.computeHomogeneity();
+			System.out.println("Homogeneity value: "+feat);
+		}
 		return feat;
 	}
 }

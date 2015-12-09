@@ -58,7 +58,7 @@ public class TextureKnowledge {
 		
 		if(mode.equals("Flat")){
 			for(int i=0; i<totalSize; i++){
-				for(int j=0; j<this.flatFeatures; i++){
+				for(int j=0; j<this.flatFeatures; j++){
 					this.flatKnowledgebase[i][j] = extract.getFlatFeature(i, j);
 				}
 			}

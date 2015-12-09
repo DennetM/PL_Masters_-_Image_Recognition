@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+import ocrKnowledgebase.TextureKnowledge;
 import ocrRecognizer.TextureExtractor;
 
 
@@ -7,6 +8,10 @@ import ocrRecognizer.TextureExtractor;
 public class main {
 	
 	public static void main(String[] args) throws IOException{
+		
+		TextureKnowledge txtKnow = new TextureKnowledge(100, 100, 100, 100, 5, 0);
+		TextureExtractor txtExtr = new TextureExtractor(txtKnow.getLinenNum(), txtKnow.getSaltNum(), txtKnow.getStrawNum(), txtKnow.getWoodNum());
+		txtKnow.gatherKnowledge("Flat", txtExtr);
 		
 		/*
 		//Testing the kNN Algorithm, also the proper program loop.
