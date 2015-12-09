@@ -89,9 +89,6 @@ public class Knowledge {
 	//NOTICE: INVOKE THIS FUNCTION -ONLY- AFTER BOTH DATABASES HAVE BEEN FILLED, OTHERWISE  YOU WILL ONLY GET GIBBERISH!!
 	public void testNumbers(int k){
 		int successValue = 0; //<-- we'll increment this each time we get a correct result.
-<<<<<<< HEAD
-		int[][] table = new int[11][11];
-=======
 		
 		//Our match-table, made so we can view the exact amount of values we assigned vs how they were supposed
 		//to be assigned.	
@@ -103,7 +100,6 @@ public class Knowledge {
 			resultTable[0][i] = i-1;
 		}
 		
->>>>>>> origin/master
 		//Fly through the entire matchBase, going through each one.
 		for (int i=0; i<this.sizeMatch; i++){
 			double[][] distance = new double[this.size][2];
@@ -143,44 +139,15 @@ public class Knowledge {
 				}
 			}
 			
-<<<<<<< HEAD
-			
-=======
 			//Assign data to our match database.
 			resultTable[(int)this.matchBase[i][0]+1][memIndex+1] += 1;
->>>>>>> origin/master
 
 			//Now check if the label is the same as the label we know is true.
 			if ((double)memIndex == this.matchBase[i][0]) successValue++;
-
-			
-			for(int h = 1; h < 11; h++){
-				for(int w = 1; w < 11; w++){
-					table[h][0] = h - 1;
-					table[0][w] = w - 1;
-					//table[(int)this.matchBase[i][0]+1][memIndex+1] += 1;
-				}
-			}
-
-			table[(int)this.matchBase[i][0]+1][memIndex+1] += 1;
 		}
 		
+		
 		//All done? Let's check our results:
-<<<<<<< HEAD
-	
-
-			System.out.println(table[0][0] + "  " + table[1][0] + "  " + table[2][0] + "  " + table[3][0] + "  " + table[4][0] + "  " + table[5][0] + "  " + table[6][0] + "  " + table[7][0] + "  " + table[8][0] + "  " + table[9][0] + "  " + table[10][0]);
-			System.out.println(table[0][1] + "  " + table[1][1] + "  " + table[2][1] + "  " + table[3][1] + "  " + table[4][1] + "  " + table[5][1] + "  " + table[6][1] + "  " + table[7][1] + "  " + table[8][1] + "  " + table[9][1] + "  " + table[10][1]);
-			System.out.println(table[0][2] + "  " + table[1][2] + "  " + table[2][2] + "  " + table[3][2] + "  " + table[4][2] + "  " + table[5][2] + "  " + table[6][2] + "  " + table[7][2] + "  " + table[8][2] + "  " + table[9][2] + "  " + table[10][2]);
-			System.out.println(table[0][3] + "  " + table[1][3] + "  " + table[2][3] + "  " + table[3][3] + "  " + table[4][3] + "  " + table[5][3] + "  " + table[6][3] + "  " + table[7][3] + "  " + table[8][3] + "  " + table[9][3] + "  " + table[10][3]);
-			System.out.println(table[0][4] + "  " + table[1][4] + "  " + table[2][4] + "  " + table[3][4] + "  " + table[4][4] + "  " + table[5][4] + "  " + table[6][4] + "  " + table[7][4] + "  " + table[8][4] + "  " + table[9][4] + "  " + table[10][4]);
-			System.out.println(table[0][5] + "  " + table[1][5] + "  " + table[2][5] + "  " + table[3][5] + "  " + table[4][5] + "  " + table[5][5] + "  " + table[6][5] + "  " + table[7][5] + "  " + table[8][5] + "  " + table[9][5] + "  " + table[10][5]);
-			System.out.println(table[0][6] + "  " + table[1][6] + "  " + table[2][6] + "  " + table[3][6] + "  " + table[4][6] + "  " + table[5][6] + "  " + table[6][6] + "  " + table[7][6] + "  " + table[8][6] + "  " + table[9][6] + "  " + table[10][6]);
-			System.out.println(table[0][7] + "  " + table[1][7] + "  " + table[2][7] + "  " + table[3][7] + "  " + table[4][7] + "  " + table[5][7] + "  " + table[6][7] + "  " + table[7][7] + "  " + table[8][7] + "  " + table[9][7] + "  " + table[10][7]);
-			System.out.println(table[0][8] + "  " + table[1][8] + "  " + table[2][8] + "  " + table[3][8] + "  " + table[4][8] + "  " + table[5][8] + "  " + table[6][8] + "  " + table[7][8] + "  " + table[8][8] + "  " + table[9][8] + "  " + table[10][8]);
-			System.out.println(table[0][9] + "  " + table[1][9] + "  " + table[2][9] + "  " + table[3][9] + "  " + table[4][9] + "  " + table[5][9] + "  " + table[6][9] + "  " + table[7][9] + "  " + table[8][9] + "  " + table[9][9] + "  " + table[10][9]);
-			System.out.println(table[0][10] + "  " + table[1][10] + "  " + table[2][10] + "  " + table[3][10] + "  " + table[4][10] + "  " + table[5][10] + "  " + table[6][10] + "  " + table[7][10] + "  " + table[8][10] + "  " + table[9][10] + "  " + table[10][10]);
-=======
 		double success = ((double)successValue / (double)this.sizeMatch) * 100;
 		System.out.println("We're done. Our effective guess success rate measures at: "+success+"%!");
 		
@@ -197,7 +164,6 @@ public class Knowledge {
 		System.out.println(resultTable[0][8] + "   " + resultTable[1][8] + "   " + resultTable[2][8] + "   " + resultTable[3][8] + "   " + resultTable[4][8] + "   " + resultTable[5][8] + "   " + resultTable[6][8] + "   " + resultTable[7][8] + "   " + resultTable[8][8] + "   " + resultTable[9][8] + "   " + resultTable[10][8]);
 		System.out.println(resultTable[0][9] + "   " + resultTable[1][9] + "   " + resultTable[2][9] + "   " + resultTable[3][9] + "   " + resultTable[4][9] + "   " + resultTable[5][9] + "   " + resultTable[6][9] + "   " + resultTable[7][9] + "   " + resultTable[8][9] + "   " + resultTable[9][9] + "   " + resultTable[10][9]);
 		System.out.println(resultTable[0][10] + "   " + resultTable[1][10] + "   " + resultTable[2][10] + "   " + resultTable[3][10] + "   " + resultTable[4][10] + "   " + resultTable[5][10] + "   " + resultTable[6][10] + "   " + resultTable[7][10] + "   " + resultTable[8][10] + "   " + resultTable[9][10] + "   " + resultTable[10][10]);
->>>>>>> origin/master
 	}
 	
 	//saveKnowledge - this function will write a simple text file with the entire knowledgebase printed inside of it.
