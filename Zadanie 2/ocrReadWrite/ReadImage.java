@@ -14,7 +14,7 @@ public class ReadImage {
 	
 	public static int[][] read(String file) throws IOException{
 		String path = "Test/"+file;
-		System.out.println(path);
+		System.out.println("Reading: "+path);
 		BufferedImage img = ImageIO.read(new File(path));
 		int[][] intImg = new int[img.getWidth()][img.getHeight()];
 		
@@ -29,7 +29,7 @@ public class ReadImage {
 	
 	public static int[][] read(String type, String file) throws IOException{
 		String path = "Train/"+type+"/"+file;
-		System.out.println(path);
+		System.out.println("Reading: "+path);
 		BufferedImage img = ImageIO.read(new File(path));
 		int[][] intImg = new int[img.getWidth()][img.getHeight()];
 		

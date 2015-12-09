@@ -1,5 +1,7 @@
 package ocrKnowledgebase;
 
+import java.io.IOException;
+
 import ocrRecognizer.TextureExtractor;
 
 //Essentially a copy of Knowledge from numbers, just modified to fit textures instead.
@@ -51,25 +53,25 @@ public class TextureKnowledge {
 	public int getFeatureNumFFT(){ return this.FFTFeatures; }
 	
 	//gatherKnowledge - runs through the tables and fills them up with juicy juicy knowledge. Distinguished by mode.
-	public void gatherKnowledge(String mode, TextureExtractor extract){
+	public void gatherKnowledge(String mode, TextureExtractor extract) throws IOException{
 		int totalSize = this.sizeLinen + this.sizeSalt + this.sizeStraw + this.sizeWood;
 		
 		if(mode.equals("Flat")){
 			for(int i=0; i<totalSize; i++){
 				for(int j=0; j<this.flatFeatures; i++){
-					if(j==0) this.flatKnowledgebase[i][j] = extract.getLabel(i);
-					else this.flatKnowledgebase[i][j] = extract.getFlatFeature(i, j);
+					this.flatKnowledgebase[i][j] = extract.getFlatFeature(i, j);
 				}
 			}
 		}
+		/*
 		if(mode.equals("FFT")){
 			for(int i=0; i<totalSize; i++){
 				for(int j=0; j<this.FFTFeatures; i++){
-					if(j==0) this.fftKnowledgebase[i][j] = extract.getLabel(i);
 					else this.fftKnowledgebase[i][j] = extract.getFFTFeature(i, j);
 				}
 			}
 		}
+		*/
 		else System.out.println("Wrong mode!");
 	}
 	

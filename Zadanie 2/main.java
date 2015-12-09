@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-import ocrReadWrite.ReadImage;
+import ocrRecognizer.TextureExtractor;
 
 
 //For now, we just debug stuff.
