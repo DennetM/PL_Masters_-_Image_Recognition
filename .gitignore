@@ -43,3 +43,4 @@ Temporary Items
 .apdisk
 *.idx1-ubyte
 *.idx3-ubyte
+/bin

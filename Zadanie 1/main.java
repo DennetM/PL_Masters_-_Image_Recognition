@@ -13,9 +13,11 @@ public class main {
 		
 		//Testing the kNN Algorithm, also the proper program loop.
 		
+		long start = System.nanoTime();
+		
 		//Size setting.
 		int knowledgeSize = 60000;
-		int matchSize = 100;
+		int matchSize = 10000;
 		
 		//Spawn the knowledgebase.
 		Knowledge database = new Knowledge(knowledgeSize, matchSize);
@@ -36,6 +38,11 @@ public class main {
 		
 		//All that done, let's see how effective are we.
 		database.testNumbers(8);
+		
+		
+		long end = System.nanoTime();
+		
+		System.out.println("Loop time: " + (end - start)/1000000000.0F);
 		
 		/*Success.
 		//Initial read-extract-write test.
