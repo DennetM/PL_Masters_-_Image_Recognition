@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import ocrReadWrite.ReadImage;
 
+import org.apache.commons.math3.complex.Complex;
+
 //The extractor class, which will gather features of images one by one and prepare them to be sent to Knowledge class.
 public class TextureExtractor {
 	
@@ -54,7 +56,7 @@ public class TextureExtractor {
 		String mag = Integer.toString(magicNumber);
 		String file = ("000" + magicNumber).substring(mag.length());
 		//Access the file.
-		int[][] imgRaw = ReadImage.read(type, type+file+".bmp");
+		int[][] imgRaw = ReadImage.readTrain(type, type+file+".bmp");
 		double[][] imgMatrix = new double[64][64];
 		
 		//Step 3. Prepare the Grey-Level Co-Occurence (GLCM) Matrix, from which we'll extract the data for the greyscale texture.
@@ -101,7 +103,7 @@ public class TextureExtractor {
 	
 	//getFFTFeature - essentially a different flavour of the above, wherein we instead of using GLCM compute the
 	//FFT spectrum of the image and gather information from therein.
-	public double getFFTFeature(int imgNumber, int FeatNumber) throws IOException{
+	public double getFFTFeature(int imgNumber, int featNumber) throws IOException{
 		//Step 1. Determine what sort of image we're dealing with.
 		String type = determineType(imgNumber+1);
 		//Step 2. Access the image specified by the image number (and it's type).
@@ -113,12 +115,74 @@ public class TextureExtractor {
 		String mag = Integer.toString(magicNumber);
 		String file = ("000" + magicNumber).substring(mag.length());
 		//Access the file.
-		int[][] imgRaw = ReadImage.read(type, type+file+".bmp");
+		int[][] imgRaw = ReadImage.readTrain(type, type+file+".bmp");
 		
 		//Step 3. Perform the Fast Fourier Transform on the image so we can gather it's features.
 		FFT finalFantasy = new FFT(imgRaw, 64, 64);
 		finalFantasy.FFTStandard();
 		
-		return 0.0;
+		//Step 4. Apply the filters to determine the feature.
+		double feat = 0.0;
+		if(featNumber==0){
+			//Label
+			if(type.equals("linen")) feat = 0.0;
+			if(type.equals("salt")) feat = 1.0;
+			if(type.equals("straw")) feat = 2.0;
+			if(type.equals("wood")) feat = 3.0;
+			System.out.println("Label: "+feat);
+		}
+		if(featNumber==1){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter1.png");
+			double content = 0.0;
+			for(int x=0;x<64;x++){
+				for(int y=0;y<64;y++){
+					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
+					content += finalFantasy.FFTImage[x][y].abs();
+				}
+			}
+			feat = content / (64*64);
+			System.out.println("Filter1: "+feat);
+		}
+		if(featNumber==2){
+			//Filter 2
+			int[][]fltr = ReadImage.readFilter("Filter2.png");
+			double content = 0.0;
+			for(int x=0;x<64;x++){
+				for(int y=0;y<64;y++){
+					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
+					content += finalFantasy.FFTImage[x][y].abs();
+				}
+			}
+			feat = content / (64*64);
+			System.out.println("Filter2: "+feat);
+		}
+		if(featNumber==3){
+			//Filter 3
+			int[][]fltr = ReadImage.readFilter("Filter3.png");
+			double content = 0.0;
+			for(int x=0;x<64;x++){
+				for(int y=0;y<64;y++){
+					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
+					content += finalFantasy.FFTImage[x][y].abs();
+				}
+			}
+			feat = content / (64*64);
+			System.out.println("Filter3: "+feat);
+		}
+		if(featNumber==4){
+			//Filter 4
+			int[][]fltr = ReadImage.readFilter("Filter4.png");
+			double content = 0.0;
+			for(int x=0;x<64;x++){
+				for(int y=0;y<64;y++){
+					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
+					content += finalFantasy.FFTImage[x][y].abs();
+				}
+			}	
+			feat = content / (64*64);
+			System.out.println("Filter4: "+feat);
+		}
+		return feat;
 	}
 }

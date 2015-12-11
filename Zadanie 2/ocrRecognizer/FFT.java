@@ -86,6 +86,8 @@ public class FFT {
 			}
 		}
 		System.out.println("Finished FFT by rows. Finished FFT.");
+		flipFFT();
+		System.out.println("FFT Flipped and ready to filter.");
 	}
 	
 	public void flipFFT(){
