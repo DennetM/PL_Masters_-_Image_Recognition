@@ -12,6 +12,19 @@ public class ReadImage {
 	
 	//No constructors nor variables this is public static territory.
 	
+	public static void saveTestFunction(int[][] img, String filename) throws IOException{
+		BufferedImage saveImg = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
+		for(int x=0;x<512;x++){
+			for(int y=0;y<512;y++){
+				Color col = new Color(img[x][y], img[x][y], img[x][y]);
+				saveImg.setRGB(x,y,col.getRGB());
+			}
+		}
+		
+		File file = new File(filename);
+		ImageIO.write(saveImg, "PNG", file);
+	}
+	
 	public static int[][] readTest(String file) throws IOException{
 		String path = "Test/"+file;
 		System.out.println("Reading: "+path);
