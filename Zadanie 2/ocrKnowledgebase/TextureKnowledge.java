@@ -174,16 +174,18 @@ public class TextureKnowledge {
 					double[] FFTFeatures = new double[this.flatFeatures];
 					//Fill the features, excluding the label since it's not necessary.
 					FFT FFTTest1 = new FFT(window, 4, 4);
+					FFTTest1.FFTStandard();
 					double content1 = 0.0;
 					for(int scanx=0; scanx<4; scanx++){
 						for(int scany=0; scany<4; scany++){
-							if(fltr1[scanx][scany] == 0) FFTTest1.FFTImage[x][y] = Complex.ZERO;
+							if(fltr1[scanx][scany] == 0) FFTTest1.FFTImage[scanx][scany] = Complex.ZERO;
 							content1 += FFTTest1.FFTImage[scanx][scany].abs();
 						}
 					}
 					FFTFeatures[1] = content1 / (4*4);
 					
 					FFT FFTTest2 = new FFT(window, 4, 4);
+					FFTTest2.FFTStandard();
 					double content2 = 0.0;
 					for(int scanx=0; scanx<4; scanx++){
 						for(int scany=0; scany<4; scany++){
@@ -194,6 +196,7 @@ public class TextureKnowledge {
 					FFTFeatures[2] = content2 / (4*4);
 					
 					FFT FFTTest3 = new FFT(window, 4, 4);
+					FFTTest3.FFTStandard();
 					double content3 = 0.0;
 					for(int scanx=0; scanx<4; scanx++){
 						for(int scany=0; scany<4; scany++){
@@ -204,6 +207,7 @@ public class TextureKnowledge {
 					FFTFeatures[3] = content3 / (4*4);
 					
 					FFT FFTTest4 = new FFT(window, 4, 4);
+					FFTTest4.FFTStandard();
 					double content4 = 0.0;
 					for(int scanx=0; scanx<4; scanx++){
 						for(int scany=0; scany<4; scany++){
@@ -218,7 +222,7 @@ public class TextureKnowledge {
 					for(int s=0; s<this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood; s++){
 						double dstVal = 0;
 						for(int ft=1; ft<5; ft++){
-							dstVal+=Math.abs(FlatFeatures[ft] - this.flatKnowledgebase[s][ft]);
+							dstVal+=Math.abs(FFTFeatures[ft] - this.flatKnowledgebase[s][ft]);
 						}
 						distanceFFT[s][0] = dstVal;
 						distanceFFT[s][1] = this.flatKnowledgebase[s][0];
@@ -230,15 +234,15 @@ public class TextureKnowledge {
 					});
 					//The labels are modified. We only have 4 of them. Linen, Salt, Straw and Wood.
 					double[] labelsFFT = new double[4];
-					Arrays.fill(labels, 0.0);
+					Arrays.fill(labelsFFT, 0.0);
 					for(int pick=0; pick<k; pick++){
-						labels[(int)distance[pick][1]] += 1;
+						labelsFFT[(int)distance[pick][1]] += 1;
 					}
 					int memIndexFFT = 0;
 					double memValueFFT = 0;
 					//Same here - just 4 labels.
 					for(int pickHigh=0; pickHigh<4; pickHigh++){
-						if (labels[pickHigh] >= memValueFFT){
+						if (labelsFFT[pickHigh] >= memValueFFT){
 							memValueFFT=labels[pickHigh];
 							memIndexFFT = pickHigh;
 						}
@@ -273,7 +277,7 @@ public class TextureKnowledge {
 			}
 			//Calculate the percentage for this picture.
 			System.out.println("Flat success rate for Test#"+i+" :"+((FlatSuccess/(512*512))*100)+"%");
-			System.out.println("FFT success rate for Test#"+i+" :"+FFTSuccess);
+			System.out.println("FFT success rate for Test#"+i+" :"+((FFTSuccess/(512*512))*100)+"%");
 		}
 	}
 	

@@ -33,7 +33,7 @@ public class FFT {
 		transImage = new double[powerIndex][powerIndex];
 		FFTImage = new Complex[powerIndex][powerIndex];
 		this.powerIndex = powerIndex;
-		
+
 		for(int i=0; i<powerIndex; i++){
 			for(int j=0; j<powerIndex;j++){
 				//If you go over the base values, instead input zeroes.
@@ -67,7 +67,7 @@ public class FFT {
 				FFTImage[clmn][i] = FFTTemp[i];
 			}
 		}
-		System.out.println("Finished FFT by columns.");
+		//System.out.println("Finished FFT by columns.");
 		
 		
 		//We have a full rCom table that's been partially transformed. Now we repeat the entire algorithm by rows.
@@ -85,9 +85,9 @@ public class FFT {
 				FFTImage[i][row] = tempRow[i];
 			}
 		}
-		System.out.println("Finished FFT by rows. Finished FFT.");
+		//System.out.println("Finished FFT by rows. Finished FFT.");
 		flipFFT();
-		System.out.println("FFT Flipped and ready to filter.");
+		//System.out.println("FFT Flipped and ready to filter.");
 	}
 	
 	public void flipFFT(){
