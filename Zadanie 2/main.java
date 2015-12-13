@@ -15,7 +15,10 @@ public class main {
 		txtKnow.gatherKnowledge("Flat", txtExtr);
 		txtKnow.gatherKnowledge("FFT", txtExtr);
 		
-		txtKnow.testKnn(5);
+		txtKnow.testFFTKNN(15);
+		txtKnow.testFlatKNN(15);
+		
+		
 		
 		/*
 		//Testing the kNN Algorithm, also the proper program loop.
