@@ -11,8 +11,11 @@ public class FFT {
 	
 	//Variables
 	private int powerIndex;
-	public Complex[][] FFTImage;
+	private Complex[][] FFTImage;
 	private double[][] transImage;
+	
+	public double[][] FreqSpectrum;
+	public double[][] PowrSpectrum;
 	FastFourierTransformer fft = new FastFourierTransformer(DftNormalization.STANDARD);
 	
 	//Constructor
@@ -32,6 +35,8 @@ public class FFT {
 		
 		transImage = new double[powerIndex][powerIndex];
 		FFTImage = new Complex[powerIndex][powerIndex];
+		FreqSpectrum = new double[powerIndex][powerIndex];
+		PowrSpectrum = new double[powerIndex][powerIndex];
 		this.powerIndex = powerIndex;
 
 		for(int i=0; i<powerIndex; i++){
@@ -88,6 +93,13 @@ public class FFT {
 		//System.out.println("Finished FFT by rows. Finished FFT.");
 		flipFFT();
 		//System.out.println("FFT Flipped and ready to filter.");
+		for(int x=0; x<powerIndex; x++){
+			for(int y=0; y<powerIndex; y++){
+				this.FreqSpectrum[x][y] = this.FFTImage[x][y].getArgument();
+				this.PowrSpectrum[x][y] = this.FFTImage[x][y].abs();
+			}
+		}
+		normalize();
 	}
 	
 	public void flipFFT(){
@@ -113,6 +125,31 @@ public class FFT {
 					FFTImage[i-half][half+j] = temp[i][j];
 					temp[i][j] = Complex.ZERO;
 				}
+			}
+		}
+	}
+	
+	public void normalize(){
+		//Find max Power and Frequency values.
+		double PowMax = 0.0;
+		double FrqMax = 0.0;
+		
+		for(int x=0; x<powerIndex; x++){
+			for(int y=0; y<powerIndex; y++){
+				if(this.PowrSpectrum[x][y] > PowMax) PowMax = this.PowrSpectrum[x][y];
+				if(this.FreqSpectrum[x][y] > FrqMax) FrqMax = this.FreqSpectrum[x][y];	
+			}
+		}
+		
+		//Normalization constants
+		double PowerConstant = 255 / Math.log(1 + Math.abs(PowMax));
+		double FreqConstant = 255 / Math.log(1+ Math.abs(FrqMax));
+		
+		//Normalize
+		for(int x=0; x<powerIndex; x++){
+			for(int y=0; y<powerIndex; y++){
+				this.PowrSpectrum[x][y] = PowerConstant * Math.log(1 + Math.abs(this.PowrSpectrum[x][y]));
+				this.FreqSpectrum[x][y] = FreqConstant * Math.log(1 + Math.abs(this.FreqSpectrum[x][y]));
 			}
 		}
 	}

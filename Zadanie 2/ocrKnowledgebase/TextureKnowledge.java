@@ -97,23 +97,31 @@ public class TextureKnowledge {
 			//Step 3. Set up the contemporary FlatResult and FFTResult pictures, as well as the FFT Filters.
 			int[][] flatResult = new int[512][512];
 			int[][] FFTResult = new int[512][512];
-			int[][]fltr1 = ReadImage.readFilter("Filter1Small.png");
-			int[][]fltr2 = ReadImage.readFilter("Filter2Small.png");
-			int[][]fltr3 = ReadImage.readFilter("Filter3Small.png");
-			int[][]fltr4 = ReadImage.readFilter("Filter4Small.png");
+			int[][]fltr1 = ReadImage.readFilter("Filter1.png");
+			int[][]fltr2 = ReadImage.readFilter("Filter2.png");
+			int[][]fltr3 = ReadImage.readFilter("Filter3.png");
+			int[][]fltr4 = ReadImage.readFilter("Filter4.png");
+			int[][]fltr5 = ReadImage.readFilter("Filter5.png");
+			int[][]fltr6 = ReadImage.readFilter("Filter6.png");
+			int[][]fltr7 = ReadImage.readFilter("Filter7.png");
+			int[][]fltr8 = ReadImage.readFilter("Filter8.png");
+			int[][]fltr9 = ReadImage.readFilter("Filter9.png");
+			int[][]fltr10 = ReadImage.readFilter("Filter10.png");
+			int[][]fltr11 = ReadImage.readFilter("Filter11.png");
+			int[][]fltr12 = ReadImage.readFilter("Filter12.png");
 			
 			
-			//Step 4. Fly through the picture using a 4x4 window.
+			//Step 4. Fly through the picture using a 64x64 window.
 			//This window will screen the texture and gather the features we'll compare to the database.
 			//It's small, and to the power of two, because we want to be as precise as possible. It's possible to increase
-			//it though, so we have a degree of control over it.
-			for(int x=0; x<512; x+=4){
-				for(int y=0; y<512; y+=4){
+			//it though, so we have a degree of control over it. Admittedly it could be smaller but FFT...
+			for(int x=0; x<512; x+=64){
+				for(int y=0; y<512; y+=64){
 					//Step 5. Get the window and fill it depending on where we are.
-					int[][] window = new int[4][4]; // For FFT.
-					double[][] doubWindow = new double[4][4]; //For GLCM.
-					for(int scanx=0; scanx<4; scanx++){
-						for(int scany=0; scany<4; scany++){
+					int[][] window = new int[64][64]; // For FFT.
+					double[][] doubWindow = new double[64][64]; //For GLCM.
+					for(int scanx=0; scanx<64; scanx++){
+						for(int scany=0; scany<64; scany++){
 							window[scanx][scany] = testImg[x+scanx][y+scany];
 						}
 					}
@@ -160,72 +168,44 @@ public class TextureKnowledge {
 					}
 					//Done? Assign the pixel value to our flat result table;
 					int brush = 0;
-					if(memIndex == 0.0) brush=241;
-					if(memIndex == 1.0) brush=208;
-					if(memIndex == 2.0) brush=165;
-					if(memIndex == 3.0) brush=99;
-					for(int scanx=0; scanx<4; scanx++){
-						for(int scany=0; scany<4; scany++){
+					if(memIndex == 0.0) brush=224;
+					if(memIndex == 1.0) brush=160;
+					if(memIndex == 2.0) brush=96;
+					if(memIndex == 3.0) brush=32;
+					for(int scanx=0; scanx<64; scanx++){
+						for(int scany=0; scany<64; scany++){
 							flatResult[x+scanx][y+scany] = brush;
 						}
 					}
 					
 					//Step 7. Compare FFT.
-					double[] FFTFeatures = new double[this.flatFeatures];
+					double[] FFTFeatures = new double[this.FFTFeatures];
 					//Fill the features, excluding the label since it's not necessary.
-					FFT FFTTest1 = new FFT(window, 4, 4);
-					FFTTest1.FFTStandard();
-					double content1 = 0.0;
-					for(int scanx=0; scanx<4; scanx++){
-						for(int scany=0; scany<4; scany++){
-							if(fltr1[scanx][scany] == 0) FFTTest1.FFTImage[scanx][scany] = Complex.ZERO;
-							content1 += FFTTest1.FFTImage[scanx][scany].abs();
-						}
-					}
-					FFTFeatures[1] = content1 / (4*4);
+					FFT FFTTest = new FFT(window, 64, 64);
+					FFTTest.FFTStandard();
 					
-					FFT FFTTest2 = new FFT(window, 4, 4);
-					FFTTest2.FFTStandard();
-					double content2 = 0.0;
-					for(int scanx=0; scanx<4; scanx++){
-						for(int scany=0; scany<4; scany++){
-							if(fltr2[scanx][scany] == 0) FFTTest2.FFTImage[scanx][scany] = Complex.ZERO;
-							content2+=FFTTest2.FFTImage[scanx][scany].abs();
-						}
-					}
-					FFTFeatures[2] = content2 / (4*4);
-					
-					FFT FFTTest3 = new FFT(window, 4, 4);
-					FFTTest3.FFTStandard();
-					double content3 = 0.0;
-					for(int scanx=0; scanx<4; scanx++){
-						for(int scany=0; scany<4; scany++){
-							if(fltr3[scanx][scany] == 0) FFTTest3.FFTImage[scanx][scany] = Complex.ZERO;
-							content3+=FFTTest3.FFTImage[scanx][scany].abs();
-						}
-					}
-					FFTFeatures[3] = content3 / (4*4);
-					
-					FFT FFTTest4 = new FFT(window, 4, 4);
-					FFTTest4.FFTStandard();
-					double content4 = 0.0;
-					for(int scanx=0; scanx<4; scanx++){
-						for(int scany=0; scany<4; scany++){
-							if(fltr4[scanx][scany] == 0) FFTTest4.FFTImage[scanx][scany] = Complex.ZERO;
-							content4+=FFTTest4.FFTImage[scanx][scany].abs();
-						}
-					}
-					FFTFeatures[4] = content4 / (4*4);
+					FFTFeatures[1] = filterDensity(fltr1, FFTTest);
+					FFTFeatures[2] = filterDensity(fltr2, FFTTest);	
+					FFTFeatures[3] = filterDensity(fltr3, FFTTest);	
+					FFTFeatures[4] = filterDensity(fltr4, FFTTest);	
+					FFTFeatures[5] = filterDensity(fltr5, FFTTest);	
+					FFTFeatures[6] = filterDensity(fltr6, FFTTest);	
+					FFTFeatures[7] = filterDensity(fltr7, FFTTest);	
+					FFTFeatures[8] = filterDensity(fltr8, FFTTest);	
+					FFTFeatures[9] = filterDensity(fltr9, FFTTest);	
+					FFTFeatures[10] = filterDensity(fltr10, FFTTest);	
+					FFTFeatures[11] = filterDensity(fltr11, FFTTest);	
+					FFTFeatures[12] = filterDensity(fltr12, FFTTest);	
 					
 					//Got it? Great. Compute the texture based on KNN!
 					double[][] distanceFFT = new double[this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood][2];
 					for(int s=0; s<this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood; s++){
 						double dstVal = 0;
-						for(int ft=1; ft<5; ft++){
-							dstVal+=Math.abs(FFTFeatures[ft] - this.flatKnowledgebase[s][ft]);
+						for(int ft=1; ft<13; ft++){
+							dstVal+=Math.abs(FFTFeatures[ft] - this.fftKnowledgebase[s][ft]);
 						}
 						distanceFFT[s][0] = dstVal;
-						distanceFFT[s][1] = this.flatKnowledgebase[s][0];
+						distanceFFT[s][1] = this.fftKnowledgebase[s][0];
 					}
 					java.util.Arrays.sort(distanceFFT, new java.util.Comparator<double[]>() {
 					    public int compare(double[] a, double[] b) {
@@ -236,23 +216,23 @@ public class TextureKnowledge {
 					double[] labelsFFT = new double[4];
 					Arrays.fill(labelsFFT, 0.0);
 					for(int pick=0; pick<k; pick++){
-						labelsFFT[(int)distance[pick][1]] += 1;
+						labelsFFT[(int)distanceFFT[pick][1]] += 1;
 					}
 					int memIndexFFT = 0;
 					double memValueFFT = 0;
 					//Same here - just 4 labels.
 					for(int pickHigh=0; pickHigh<4; pickHigh++){
 						if (labelsFFT[pickHigh] >= memValueFFT){
-							memValueFFT=labels[pickHigh];
+							memValueFFT=labelsFFT[pickHigh];
 							memIndexFFT = pickHigh;
 						}
 					}
 					//Done? Assign the pixel value to our flat result table;
 					brush = 0;
-					if(memIndexFFT == 0.0) brush=241;
-					if(memIndexFFT == 1.0) brush=208;
-					if(memIndexFFT == 2.0) brush=165;
-					if(memIndexFFT == 3.0) brush=99;
+					if(memIndexFFT == 0.0) brush=224;
+					if(memIndexFFT == 1.0) brush=160;
+					if(memIndexFFT == 2.0) brush=96;
+					if(memIndexFFT == 3.0) brush=32;
 					for(int scanx=0; scanx<4; scanx++){
 						for(int scany=0; scany<4; scany++){
 							FFTResult[scanx+x][scany+y] = brush;
@@ -279,6 +259,22 @@ public class TextureKnowledge {
 			System.out.println("Flat success rate for Test#"+i+" :"+((FlatSuccess/(512*512))*100)+"%");
 			System.out.println("FFT success rate for Test#"+i+" :"+((FFTSuccess/(512*512))*100)+"%");
 		}
+	}
+	
+	//yep, same function as in the Extractor. We sort of really really need it.
+	private double filterDensity(int[][] fltr, FFT fft){
+		double content = 0.0;
+		double densityBase = 0.0;
+		for(int x=0;x<64;x++){
+			for(int y=0;y<64;y++){
+				if(fltr[x][y] != 0){
+					content += fft.FreqSpectrum[x][y];
+					densityBase += 1;
+				}
+			}
+		}
+		//System.out.println("Filtered Density: "+(content/densityBase));
+		return (content/densityBase);
 	}
 	
 	//testAlt - test the three images against our database using the generalized method.

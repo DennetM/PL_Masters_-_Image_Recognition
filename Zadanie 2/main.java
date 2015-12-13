@@ -9,8 +9,8 @@ public class main {
 	
 	public static void main(String[] args) throws IOException{
 		
-		//TextureKnowledge txtKnow = new TextureKnowledge(814, 917, 858, 848, 5, 5);
-		TextureKnowledge txtKnow = new TextureKnowledge(8, 8, 8, 8, 5, 5);
+		TextureKnowledge txtKnow = new TextureKnowledge(814, 917, 858, 848, 5, 13);
+		//TextureKnowledge txtKnow = new TextureKnowledge(8, 8, 8, 8, 5, 13);
 		TextureExtractor txtExtr = new TextureExtractor(txtKnow.getLinenNum(), txtKnow.getSaltNum(), txtKnow.getStrawNum(), txtKnow.getWoodNum());
 		txtKnow.gatherKnowledge("Flat", txtExtr);
 		txtKnow.gatherKnowledge("FFT", txtExtr);

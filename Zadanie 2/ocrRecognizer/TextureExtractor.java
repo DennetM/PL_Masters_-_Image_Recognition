@@ -134,55 +134,78 @@ public class TextureExtractor {
 		if(featNumber==1){
 			//Filter 1
 			int[][]fltr = ReadImage.readFilter("Filter1.png");
-			double content = 0.0;
-			for(int x=0;x<64;x++){
-				for(int y=0;y<64;y++){
-					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
-					content += finalFantasy.FFTImage[x][y].abs();
-				}
-			}
-			feat = content / (64*64);
-			System.out.println("Filter1: "+feat);
+			feat = filterDensity(fltr, finalFantasy);
 		}
 		if(featNumber==2){
-			//Filter 2
+			//Filter 1
 			int[][]fltr = ReadImage.readFilter("Filter2.png");
-			double content = 0.0;
-			for(int x=0;x<64;x++){
-				for(int y=0;y<64;y++){
-					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
-					content += finalFantasy.FFTImage[x][y].abs();
-				}
-			}
-			feat = content / (64*64);
-			System.out.println("Filter2: "+feat);
+			feat = filterDensity(fltr, finalFantasy);
 		}
 		if(featNumber==3){
-			//Filter 3
+			//Filter 1
 			int[][]fltr = ReadImage.readFilter("Filter3.png");
-			double content = 0.0;
-			for(int x=0;x<64;x++){
-				for(int y=0;y<64;y++){
-					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
-					content += finalFantasy.FFTImage[x][y].abs();
-				}
-			}
-			feat = content / (64*64);
-			System.out.println("Filter3: "+feat);
+			feat = filterDensity(fltr, finalFantasy);
 		}
 		if(featNumber==4){
-			//Filter 4
+			//Filter 1
 			int[][]fltr = ReadImage.readFilter("Filter4.png");
-			double content = 0.0;
-			for(int x=0;x<64;x++){
-				for(int y=0;y<64;y++){
-					if(fltr[x][y] == 0) finalFantasy.FFTImage[x][y] = Complex.ZERO;
-					content += finalFantasy.FFTImage[x][y].abs();
-				}
-			}	
-			feat = content / (64*64);
-			System.out.println("Filter4: "+feat);
+			feat = filterDensity(fltr, finalFantasy);
 		}
+		if(featNumber==5){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter5.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}
+		if(featNumber==6){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter6.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}
+		if(featNumber==7){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter7.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}
+		if(featNumber==8){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter8.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}
+		if(featNumber==9){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter9.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}
+		if(featNumber==10){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter10.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}
+		if(featNumber==11){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter11.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}
+		if(featNumber==12){
+			//Filter 1
+			int[][]fltr = ReadImage.readFilter("Filter12.png");
+			feat = filterDensity(fltr, finalFantasy);
+		}		
 		return feat;
+	}
+	
+	private double filterDensity(int[][] fltr, FFT fft){
+		double content = 0.0;
+		double densityBase = 0.0;
+		for(int x=0;x<64;x++){
+			for(int y=0;y<64;y++){
+				if(fltr[x][y] != 0){
+					content += fft.FreqSpectrum[x][y];
+					densityBase += 1;
+				}
+			}
+		}
+		System.out.println("Filtered Density: "+(content/densityBase));
+		return (content/densityBase);
 	}
 }

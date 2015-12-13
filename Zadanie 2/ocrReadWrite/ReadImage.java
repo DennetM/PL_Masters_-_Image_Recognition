@@ -2,6 +2,7 @@ package ocrReadWrite;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,12 +30,14 @@ public class ReadImage {
 		String path = "Test/"+file;
 		System.out.println("Reading: "+path);
 		BufferedImage img = ImageIO.read(new File(path));
+		Raster rastr = img.getData();
 		int[][] intImg = new int[img.getWidth()][img.getHeight()];
 		
 		for(int x=0; x<img.getWidth(); x++){
 			for(int y=0; y<img.getHeight(); y++){
-				Color col = new Color(img.getRGB(x, y));
-				intImg[x][y] = col.getRed(); // It's greyscale, so R=G=B.
+				//Color col = new Color(img.getRGB(x, y));
+				//intImg[x][y] = col.getRed(); // It's greyscale, so R=G=B.
+				intImg[x][y] = rastr.getSample(x, y, 0);
 			}
 		}
 		return intImg;
@@ -44,12 +47,14 @@ public class ReadImage {
 		String path = "Train/"+type+"/"+file;
 		System.out.println("Reading: "+path);
 		BufferedImage img = ImageIO.read(new File(path));
+		Raster rastr = img.getData();
 		int[][] intImg = new int[img.getWidth()][img.getHeight()];
 		
 		for(int x=0; x<img.getWidth(); x++){
 			for(int y=0; y<img.getHeight(); y++){
-				Color col = new Color(img.getRGB(x, y));
-				intImg[x][y] = col.getRed(); // It's greyscale, so R=G=B.
+				//Color col = new Color(img.getRGB(x, y));
+				//intImg[x][y] = col.getRed(); // It's greyscale, so R=G=B.
+				intImg[x][y] = rastr.getSample(x, y, 0);
 			}
 		}
 		return intImg;
@@ -59,12 +64,14 @@ public class ReadImage {
 		String path = "Filter/"+file;
 		System.out.println("Reading: "+path);
 		BufferedImage img = ImageIO.read(new File(path));
+		Raster rastr = img.getData();
 		int[][] intImg = new int[img.getWidth()][img.getHeight()];
 		
 		for(int x=0; x<img.getWidth(); x++){
 			for(int y=0; y<img.getHeight(); y++){
-				Color col = new Color(img.getRGB(x, y));
-				intImg[x][y] = col.getRed(); // It's greyscale, so R=G=B.
+				//Color col = new Color(img.getRGB(x, y));
+				//intImg[x][y] = col.getRed(); // It's greyscale, so R=G=B.
+				intImg[x][y] = rastr.getSample(x, y, 0);
 			}
 		}
 		return intImg;
