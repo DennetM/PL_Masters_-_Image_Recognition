@@ -81,7 +81,7 @@ public class TextureKnowledge {
 	
 	//testKnn - test the three images against our database using the KNN method.
 	//This function will test both FTT and Flat recognition, so don't turn it on BEFORE filling out both databases.
-	public void testFlatKNN(int k) throws IOException{
+	public void testFlat(int k, String TYPE) throws IOException{
 		//Prepare our universal values.
 		double successRate = 0.0; // <-- our success rate.
 		
@@ -114,7 +114,9 @@ public class TextureKnowledge {
 					windowFeatures[4] = glcm.computeHomogeneity();
 					
 					//Done? Great. Count the KNN.
-					double feat = determinteKNN(windowFeatures, k, "Flat");
+					double feat = 0;
+					if (TYPE.equals("KNN")) feat = determineKNN(windowFeatures, k, "Flat");
+					if (TYPE.equals("BAE")) feat = determineBayes(windowFeatures, "Flat");
 					
 					//With our feature, set the colour of the brush we'll paint the result.
 					int brush = 0;
@@ -144,10 +146,10 @@ public class TextureKnowledge {
 			//And see how well we did.
 			ReadImage.saveTestFunction(result, "result"+(i+1)+".png");
 			ReadImage.saveTestFunction(overlap,"overlapFlat"+(i+1)+".png");
-			System.out.println("Success Rate (Flat) measures at: "+((successRate/(512*512))*100)+"%");
+			System.out.println("Success Rate (Flat) measures at: "+(((successRate/2)/(512*512))*100)+"%");
 		}
 	}
-	public void testFFTKNN(int k) throws IOException{
+	public void testFFT(int k, String TYPE) throws IOException{
 		//Prepare our universal values.
 		double successRate = 0.0; // <-- our success rate.
 		int[][]fltr1 = ReadImage.readFilter("Filter1.png");
@@ -201,7 +203,9 @@ public class TextureKnowledge {
 					windowFeatures[12] = filterDensity(fltr12, windowFFT);
 					
 					//Done? Great. Count the KNN.
-					double feat = determinteKNN(windowFeatures, k, "FFT");
+					double feat = 0;
+					if (TYPE.equals("KNN")) feat = determineKNN(windowFeatures, k, "FFT");
+					if (TYPE.equals("BAE")) feat = determineBayes(windowFeatures, "FFT");
 					
 					//With our feature, set the colour of the brush we'll paint the result.
 					int brush = 0;
@@ -231,191 +235,9 @@ public class TextureKnowledge {
 			//And see how well we did.
 			ReadImage.saveTestFunction(result, "result"+(i+1)+".png");
 			ReadImage.saveTestFunction(overlap, "overlapFFT"+(i+1)+".png");
-			System.out.println("Success Rate (FFT) measures at: "+((successRate/(512*512))*100)+"%");
+			System.out.println("Success Rate (FFT) measures at: "+(((successRate/2)/(512*512))*100)+"%");
 		}
 	}
-	
-	/* OLD VERSION \/
-	public void testKnn(int k) throws IOException{
-		double totalSuccessFlat = 0; // <-- we're starting our count from here.
-		double totalSuccessFFT = 0;
-		//We're going to fly through the three files one by one.
-		for(int i=0;i<3;i++){
-			double FlatSuccess = 0; // <-- ...and this is the count for the single picture.
-			double FFTSuccess = 0;
-			//Step 1. Obtain the labels.
-			System.out.println("Testing file "+(i+1)+".");
-			int[][] label = ReadImage.readTest("label"+(i+1)+".bmp");
-			//Step 2. Get the picture.
-			int[][] testImg = ReadImage.readTest("test"+(i+1)+".bmp");
-			
-			//Step 3. Set up the contemporary FlatResult and FFTResult pictures, as well as the FFT Filters.
-			int[][] flatResult = new int[512][512];
-			int[][] FFTResult = new int[512][512];
-			int[][]fltr1 = ReadImage.readFilter("Filter1.png");
-			int[][]fltr2 = ReadImage.readFilter("Filter2.png");
-			int[][]fltr3 = ReadImage.readFilter("Filter3.png");
-			int[][]fltr4 = ReadImage.readFilter("Filter4.png");
-			int[][]fltr5 = ReadImage.readFilter("Filter5.png");
-			int[][]fltr6 = ReadImage.readFilter("Filter6.png");
-			int[][]fltr7 = ReadImage.readFilter("Filter7.png");
-			int[][]fltr8 = ReadImage.readFilter("Filter8.png");
-			int[][]fltr9 = ReadImage.readFilter("Filter9.png");
-			int[][]fltr10 = ReadImage.readFilter("Filter10.png");
-			int[][]fltr11 = ReadImage.readFilter("Filter11.png");
-			int[][]fltr12 = ReadImage.readFilter("Filter12.png");
-			
-			
-			//Step 4. Fly through the picture using a 64x64 window.
-			//This window will screen the texture and gather the features we'll compare to the database.
-			//It's small, and to the power of two, because we want to be as precise as possible. It's possible to increase
-			//it though, so we have a degree of control over it. Admittedly it could be smaller but FFT...
-			for(int x=0; x<512; x+=64){
-				for(int y=0; y<512; y+=64){
-					//Step 5. Get the window and fill it depending on where we are.
-					int[][] window = new int[64][64]; // For FFT.
-					double[][] doubWindow = new double[64][64]; //For GLCM.
-					for(int scanx=0; scanx<64; scanx++){
-						for(int scany=0; scany<64; scany++){
-							window[scanx][scany] = testImg[x+scanx][y+scany];
-						}
-					}
-					
-					//Step 6. Compare Flat.
-					double[] FlatFeatures = new double[this.flatFeatures];
-					GLCM glcm = GLCM.createGLCM(doubWindow, 1, 1, 10, false, true, 1.0, 10.0);
-					//Fill the features, excluding the label since it's not necessary.
-					FlatFeatures[1] = glcm.computeContrast();
-					FlatFeatures[2] = glcm.computeCorrelation();
-					FlatFeatures[3] = glcm.computeEnergy();
-					FlatFeatures[4] = glcm.computeHomogeneity();
-					
-					//Got it? Great. Compute the texture based on KNN!
-					double[][] distance = new double[this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood][2];
-					for(int s=0; s<this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood; s++){
-						double dstVal = 0;
-						for(int ft=1; ft<5; ft++){
-							dstVal+=Math.abs(FlatFeatures[ft] - this.flatKnowledgebase[s][ft]);
-						}
-						distance[s][0] = dstVal;
-						distance[s][1] = this.flatKnowledgebase[s][0];
-					}
-					java.util.Arrays.sort(distance, new java.util.Comparator<double[]>() {
-					    public int compare(double[] a, double[] b) {
-					        return Double.compare(a[0], b[0]);
-					    }
-					});
-					//The labels are modified. We only have 4 of them. Linen, Salt, Straw and Wood.
-					double[] labels = new double[4];
-					Arrays.fill(labels, 0.0);
-					for(int pick=0; pick<k; pick++){
-						labels[(int)distance[pick][1]] += 1;
-					}
-					
-					int memIndex = 0;
-					double memValue = 0;
-					//Same here - just 4 labels.
-					for(int pickHigh=0; pickHigh<4; pickHigh++){
-						if (labels[pickHigh] >= memValue){
-							memValue=labels[pickHigh];
-							memIndex = pickHigh;
-						}
-					}
-					//Done? Assign the pixel value to our flat result table;
-					int brush = 0;
-					if(memIndex == 0.0) brush=224;
-					if(memIndex == 1.0) brush=160;
-					if(memIndex == 2.0) brush=96;
-					if(memIndex == 3.0) brush=32;
-					for(int scanx=0; scanx<64; scanx++){
-						for(int scany=0; scany<64; scany++){
-							flatResult[x+scanx][y+scany] = brush;
-						}
-					}
-					
-					//Step 7. Compare FFT.
-					double[] FFTFeatures = new double[this.FFTFeatures];
-					//Fill the features, excluding the label since it's not necessary.
-					FFT FFTTest = new FFT(window, 64, 64);
-					FFTTest.FFTStandard();
-					
-					FFTFeatures[1] = filterDensity(fltr1, FFTTest);
-					FFTFeatures[2] = filterDensity(fltr2, FFTTest);	
-					FFTFeatures[3] = filterDensity(fltr3, FFTTest);	
-					FFTFeatures[4] = filterDensity(fltr4, FFTTest);	
-					FFTFeatures[5] = filterDensity(fltr5, FFTTest);	
-					FFTFeatures[6] = filterDensity(fltr6, FFTTest);	
-					FFTFeatures[7] = filterDensity(fltr7, FFTTest);	
-					FFTFeatures[8] = filterDensity(fltr8, FFTTest);	
-					FFTFeatures[9] = filterDensity(fltr9, FFTTest);	
-					FFTFeatures[10] = filterDensity(fltr10, FFTTest);	
-					FFTFeatures[11] = filterDensity(fltr11, FFTTest);	
-					FFTFeatures[12] = filterDensity(fltr12, FFTTest);	
-					
-					//Got it? Great. Compute the texture based on KNN!
-					double[][] distanceFFT = new double[this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood][2];
-					for(int s=0; s<this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood; s++){
-						double dstVal = 0;
-						for(int ft=1; ft<13; ft++){
-							dstVal+=Math.abs(FFTFeatures[ft] - this.fftKnowledgebase[s][ft]);
-						}
-						distanceFFT[s][0] = dstVal;
-						distanceFFT[s][1] = this.fftKnowledgebase[s][0];
-					}
-					java.util.Arrays.sort(distanceFFT, new java.util.Comparator<double[]>() {
-					    public int compare(double[] a, double[] b) {
-					        return Double.compare(a[0], b[0]);
-					    }
-					});
-					//The labels are modified. We only have 4 of them. Linen, Salt, Straw and Wood.
-					double[] labelsFFT = new double[4];
-					Arrays.fill(labelsFFT, 0.0);
-					for(int pick=0; pick<k; pick++){
-						labelsFFT[(int)distanceFFT[pick][1]] += 1;
-					}
-					int memIndexFFT = 0;
-					double memValueFFT = 0;
-					//Same here - just 4 labels.
-					for(int pickHigh=0; pickHigh<4; pickHigh++){
-						if (labelsFFT[pickHigh] >= memValueFFT){
-							memValueFFT=labelsFFT[pickHigh];
-							memIndexFFT = pickHigh;
-						}
-					}
-					//Done? Assign the pixel value to our flat result table;
-					brush = 0;
-					if(memIndexFFT == 0.0) brush=224;
-					if(memIndexFFT == 1.0) brush=160;
-					if(memIndexFFT == 2.0) brush=96;
-					if(memIndexFFT == 3.0) brush=32;
-					for(int scanx=0; scanx<4; scanx++){
-						for(int scany=0; scany<4; scany++){
-							FFTResult[scanx+x][scany+y] = brush;
-						}
-					}
-				}
-			}
-			//Step 8. We're done with an individual picture, so let's see how well we did.
-			ReadImage.saveTestFunction(label, ("label"+i+".png"));
-			ReadImage.saveTestFunction(flatResult, ("result"+i+".png"));
-			for(int compx=0; compx<512;compx++){
-				for(int compy=0;compy<512;compy++){
-					if(flatResult[compx][compy] == label[compx][compy]){
-						FlatSuccess++;
-						totalSuccessFlat++;
-					}
-					if(FFTResult[compx][compy] == label[compx][compy]){
-						FFTSuccess++;
-						totalSuccessFFT++;
-					}
-				}
-			}
-			//Calculate the percentage for this picture.
-			System.out.println("Flat success rate for Test#"+i+" :"+((FlatSuccess/(512*512))*100)+"%");
-			System.out.println("FFT success rate for Test#"+i+" :"+((FFTSuccess/(512*512))*100)+"%");
-		}
-	}
-	*/
 	
 	//yep, same function as in the Extractor. We sort of really really need it.
 	private double filterDensity(int[][] fltr, FFT fft){
@@ -433,7 +255,7 @@ public class TextureKnowledge {
 		return (content/densityBase);
 	}
 	
-	private double determinteKNN(double[] features, int k, String TYPE){
+	private double determineKNN(double[] features, int k, String TYPE){
 		//Fly through the entire database and count the distance from our point of features to every other one.
 		double[][] distance = new double[this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood][2];
 		for(int j=0; j<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); j++){
@@ -472,8 +294,61 @@ public class TextureKnowledge {
 		
 	}
 	
-	//testAlt - test the three images against our database using the generalized method.
-	public void testAlt(){
-		//TODO: this.
+	private double determineBayes(double[] features, String TYPE){
+		//First determine the basic probabilities of belogning to the four groups.
+		double probLinen = ((double) this.sizeLinen / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		double probSalt = (double) (this.sizeSalt / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		double probStraw = ((double) this.sizeStraw / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		double probWood = ((double) this.sizeWood / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		
+		//Now (if we're in FFT), we simplify our features a bit.
+		if(TYPE.equals("FFT")){
+			//NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
+			for(int i=0; i<features.length; i++){
+				features[i] = (((features[i] - 0) * (10 - 0)) / (255 - 0)) + 0;
+				features[i] = Math.floor(features[i]);
+			}
+		}
+		
+		//Start with the base probability of '1', meaning 'it most certainly belongs here.
+		double[] probMat = {1.0, 1.0, 1.0, 1.0};
+		
+		//Count each instance of our feature in our knowledgebase and remember it.
+		for(int i=1; i<features.length; i++){
+			double number = 0;
+			for(int j=0; j<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); j++){
+				if(TYPE.equals("Flat")){
+					if(features[i] == this.flatKnowledgebase[j][i]) number++;
+				}
+				if(TYPE.equals("FFT")){
+					if(features[i] == this.fftKnowledgebase[j][i]) number++;
+				}
+			}
+			System.out.println("Number: "+number);
+			System.out.println("SizeLinen: "+sizeLinen);
+			probMat[0] *= (number/this.sizeLinen);
+			//System.out.println("Prob:" +probMat[0]);
+			probMat[1] *= (number/this.sizeSalt);
+			probMat[2] *= (number/this.sizeStraw);
+			probMat[3] *= (number/this.sizeWood);
+		}
+		//Now add in the complete probability...
+		probMat[0] *= probLinen;
+		probMat[1] *= probSalt;
+		probMat[2] *= probStraw;
+		probMat[3] *= probWood;
+		
+		//Select the highest one.
+		double mem = probMat[0];
+		double val = 0;
+		for(int i=0; i<4; i++){
+			//System.out.println(probMat[i]);
+			if(probMat[i]>mem){
+				mem = probMat[i];
+				val = (double) i;
+			}
+		}
+		
+		return val;
 	}
 }
