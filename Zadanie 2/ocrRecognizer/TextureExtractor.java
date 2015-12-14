@@ -76,27 +76,27 @@ public class TextureExtractor {
 			if(type.equals("salt")) feat = 1.0;
 			if(type.equals("straw")) feat = 2.0;
 			if(type.equals("wood")) feat = 3.0;
-			System.out.println("Label: "+feat);
+			//System.out.println("Label: "+feat);
 		}
 		if(featNumber==1){
 			//Contrast
 			feat = glcm.computeContrast();
-			System.out.println("Contrast value: "+feat);
+			//System.out.println("Contrast value: "+feat);
 		}
 		if(featNumber==2){
 			//Correlation
 			feat = glcm.computeCorrelation();
-			System.out.println("Correlation value: "+feat);
+			//System.out.println("Correlation value: "+feat);
 		}
 		if(featNumber==3){
 			//Energy
 			feat = glcm.computeEnergy();
-			System.out.println("Energy value: "+feat);
+			//System.out.println("Energy value: "+feat);
 		}
 		if(featNumber==4){
 			//Homogenity
 			feat = glcm.computeHomogeneity();
-			System.out.println("Homogeneity value: "+feat);
+			//System.out.println("Homogeneity value: "+feat);
 		}
 		return feat;
 	}
@@ -129,7 +129,7 @@ public class TextureExtractor {
 			if(type.equals("salt")) feat = 1.0;
 			if(type.equals("straw")) feat = 2.0;
 			if(type.equals("wood")) feat = 3.0;
-			System.out.println("Label: "+feat);
+			//System.out.println("Label: "+feat);
 		}
 		if(featNumber==1){
 			//Filter 1
@@ -205,7 +205,7 @@ public class TextureExtractor {
 				}
 			}
 		}
-		System.out.println("Filtered Density: "+(content/densityBase));
+		//System.out.println("Filtered Density: "+(content/densityBase));
 		return (content/densityBase);
 	}
 }

@@ -15,10 +15,10 @@ public class main {
 		txtKnow.gatherKnowledge("Flat", txtExtr);
 		txtKnow.gatherKnowledge("FFT", txtExtr);
 		
-		txtKnow.testFFT(15, "KNN");
-		txtKnow.testFlat(15, "KNN");
-		//txtKnow.testFFT(15, "BAE");
-		//txtKnow.testFlat(15, "BAE");
+		//txtKnow.testFFT(15, "KNN");
+		//txtKnow.testFlat(15, "KNN");
+		txtKnow.testFFT(15, "BAE");
+		txtKnow.testFlat(15, "BAE");
 		
 		
 		
