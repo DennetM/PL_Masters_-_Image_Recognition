@@ -82,8 +82,6 @@ public class TextureKnowledge {
 	//testKnn - test the three images against our database using the KNN method.
 	//This function will test both FTT and Flat recognition, so don't turn it on BEFORE filling out both databases.
 	public void testFlat(int k, String TYPE) throws IOException{
-		//Prepare our universal values.
-		double successRate = 0.0; // <-- our success rate.
 		
 		//Begin. For each image..
 		for(int i=0; i<3; i++){
@@ -135,9 +133,11 @@ public class TextureKnowledge {
 				}
 			}
 			//Once we're done with our window function, calculate the success values.
-			int[][] overlap = new int[512][512];
-			for(int x=0; x<512; x++){
-				for(int y=0; y<512; y++){
+			int[][] overlap = new int[448][448];
+			double successRate = 0.0; // <-- our success rate.
+			double totalRate = 448*448;
+			for(int x=0; x<448; x++){
+				for(int y=0; y<448; y++){
 					if(result[x][y] == label[x][y]){
 						successRate++;
 						overlap[x][y]=255;
@@ -147,12 +147,11 @@ public class TextureKnowledge {
 			//And see how well we did.
 			ReadImage.saveTestFunction(result, "result"+(i+1)+".png");
 			ReadImage.saveTestFunction(overlap,"overlapFlat"+(i+1)+".png");
-			System.out.println("Success Rate (Flat) measures at: "+(((successRate/2)/(512*512))*100)+"%");
+			System.out.println("Success Rate (Flat) measures at: "+((successRate/totalRate)*100)+"%");
 		}
 	}
 	public void testFFT(int k, String TYPE) throws IOException{
 		//Prepare our universal values.
-		double successRate = 0.0; // <-- our success rate.
 		int[][]fltr1 = ReadImage.readFilter("Filter1.png");
 		int[][]fltr2 = ReadImage.readFilter("Filter2.png");
 		int[][]fltr3 = ReadImage.readFilter("Filter3.png");
@@ -225,9 +224,11 @@ public class TextureKnowledge {
 				}
 			}
 			//Once we're done with our window function, calculate the success values.
-			int[][] overlap = new int[512][512];
-			for(int x=0; x<512; x++){
-				for(int y=0; y<512; y++){
+			int[][] overlap = new int[448][448];
+			double successRate = 0.0; // <-- our success rate.
+			double totalRate = 448*448;
+			for(int x=0; x<448; x++){
+				for(int y=0; y<448; y++){
 					if(result[x][y] == label[x][y]){
 						successRate++;
 						overlap[x][y] = 255;
@@ -237,7 +238,7 @@ public class TextureKnowledge {
 			//And see how well we did.
 			ReadImage.saveTestFunction(result, "result"+(i+1)+".png");
 			ReadImage.saveTestFunction(overlap, "overlapFFT"+(i+1)+".png");
-			System.out.println("Success Rate (FFT) measures at: "+(((successRate/2)/(512*512))*100)+"%");
+			System.out.println("Success Rate (FFT) measures at: "+((successRate/totalRate)*100)+"%");
 		}
 	}
 	
@@ -397,6 +398,7 @@ public class TextureKnowledge {
 			double numberWood = 0.0;
 			for(int y=0; y<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); y++){
 				if(TYPE.equals("Flat")){
+					//TODO: This variable, find a way to generalize slightly.
 					if(features[x] == simplifiedFlat[y][x]){
 						if(y<=this.sizeLinen) numberLinen++;
 						if(y>this.sizeLinen && y<=(this.sizeLinen+this.sizeSalt)) numberSalt++;
@@ -405,6 +407,7 @@ public class TextureKnowledge {
 					}
 				}
 				if(TYPE.equals("FFT")){
+					//TODO: As above.
 					if(features[x] == simplifiedFFT[y][x]){
 						if(y<=this.sizeLinen) numberLinen++;
 						if(y>this.sizeLinen && y<=(this.sizeLinen+this.sizeSalt)) numberSalt++;
