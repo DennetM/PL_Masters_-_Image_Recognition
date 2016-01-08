@@ -94,8 +94,9 @@ public class TextureKnowledge {
 			
 			//Start pondering. We're operating on a 64x64 square that starts at (0,0) and moves through the image in 64 increments.
 			//This loops serves as the main window. Going from 0,0 to 512,512 every 64 pixels.
-			for(int x=0; x<512; x+=64){
-				for(int y=0; y<512; y+=64){
+			//CORRECTION: We go per pixel. This does give us a huge amount of redundancy but each time we correctly label at least 1 pixel.
+			for(int x=0; x<448; x++){
+				for(int y=0; y<448; y++){
 					//Create a window that will be our "image" used for data extraction.
 					double[][] window = new double[64][64]; //And fill it.
 					for(int wx=0; wx<64; wx++){
@@ -174,8 +175,9 @@ public class TextureKnowledge {
 			
 			//Start pondering. We're operating on a 64x64 square that starts at (0,0) and moves through the image in 64 increments.
 			//This loops serves as the main window. Going from 0,0 to 512,512 every 64 pixels.
-			for(int x=0; x<512; x+=64){
-				for(int y=0; y<512; y+=64){
+			//Same as before.
+			for(int x=0; x<448; x++){
+				for(int y=0; y<448; y++){
 					//Create a window that will be our "image" used for data extraction.
 					int[][] window = new int[64][64]; //And fill it.
 					for(int wx=0; wx<64; wx++){
