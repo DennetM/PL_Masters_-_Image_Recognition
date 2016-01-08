@@ -304,64 +304,6 @@ public class TextureKnowledge {
 		double probStraw = ((double) this.sizeStraw / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
 		double probWood = ((double) this.sizeWood / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
 		
-		//Now (if we're in FFT), we simplify our features a bit.
-		if(TYPE.equals("FFT")){
-			//NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
-			for(int i=0; i<features.length; i++){
-				features[i] = (((features[i] - 0) * (10 - 0)) / (255 - 0)) + 0;
-				features[i] = Math.floor(features[i]);
-			}
-		}
-		
-		//Start with the base probability of '1', meaning 'it most certainly belongs here.
-		double[] probMat = {1.0, 1.0, 1.0, 1.0};
-		
-		//Count each instance of our feature in our knowledgebase and remember it.
-		for(int i=1; i<features.length; i++){
-			double number = 0;
-			for(int j=0; j<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); j++){
-				if(TYPE.equals("Flat")){
-					if(features[i] == this.flatKnowledgebase[j][i]) number++;
-				}
-				if(TYPE.equals("FFT")){
-					if(features[i] == this.fftKnowledgebase[j][i]) number++;
-				}
-			}
-			System.out.println("Number: "+number);
-			System.out.println("SizeLinen: "+sizeLinen);
-			probMat[0] *= (number/this.sizeLinen);
-			//System.out.println("Prob:" +probMat[0]);
-			probMat[1] *= (number/this.sizeSalt);
-			probMat[2] *= (number/this.sizeStraw);
-			probMat[3] *= (number/this.sizeWood);
-		}
-		//Now add in the complete probability...
-		probMat[0] *= probLinen;
-		probMat[1] *= probSalt;
-		probMat[2] *= probStraw;
-		probMat[3] *= probWood;
-		
-		//Select the highest one.
-		double mem = probMat[0];
-		double val = 0;
-		for(int i=0; i<4; i++){
-			//System.out.println(probMat[i]);
-			if(probMat[i]>mem){
-				mem = probMat[i];
-				val = (double) i;
-			}
-		}
-		
-		return val;
-	}
-	
-	private double determineBayes2(double[] features, String TYPE){
-		//First determine the basic probabilities of belogning to the four groups.
-		double probLinen = ((double) this.sizeLinen / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
-		double probSalt = (double) (this.sizeSalt / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
-		double probStraw = ((double) this.sizeStraw / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
-		double probWood = ((double) this.sizeWood / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
-		
 		//Now in both cases, we want to copy our databases and floor them so that we get rid of pesky double values.
 		//They'll remain doubles becaue Java and division by int is a messy, messy thing but we want to have an easier time matching them.
 		double[][] simplifiedFlat = new double[this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood][this.flatFeatures];
@@ -370,6 +312,8 @@ public class TextureKnowledge {
 			for(int x=0; x<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); x++){
 				for(int y=0; y<this.flatFeatures; y++){
 					simplifiedFlat[x][y] = Math.floor(this.flatKnowledgebase[x][y]);
+					//Addition for Flat: turn NaNs into 0s, since it'll help our approximation.
+					if(Double.isNaN(simplifiedFlat[x][y])) simplifiedFlat[x][y] = 0;
 				}
 			}
 		}
@@ -383,6 +327,8 @@ public class TextureKnowledge {
 		//Floor our base features as well for optimum matching.
 		for(int x=0; x<features.length; x++){
 			features[x] = Math.floor(features[x]);
+			//Again, turn NaNs into 0s, will help.
+			if(Double.isNaN(features[x])) features[x] = 0;
 		}
 		//Just floor ALL THE THINGS.
 		
@@ -398,7 +344,6 @@ public class TextureKnowledge {
 			double numberWood = 0.0;
 			for(int y=0; y<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); y++){
 				if(TYPE.equals("Flat")){
-					//TODO: This variable, find a way to generalize slightly.
 					if(features[x] == simplifiedFlat[y][x]){
 						if(y<=this.sizeLinen) numberLinen++;
 						if(y>this.sizeLinen && y<=(this.sizeLinen+this.sizeSalt)) numberSalt++;
@@ -407,7 +352,6 @@ public class TextureKnowledge {
 					}
 				}
 				if(TYPE.equals("FFT")){
-					//TODO: As above.
 					if(features[x] == simplifiedFFT[y][x]){
 						if(y<=this.sizeLinen) numberLinen++;
 						if(y>this.sizeLinen && y<=(this.sizeLinen+this.sizeSalt)) numberSalt++;
@@ -431,6 +375,119 @@ public class TextureKnowledge {
 			finalprob[2] *= featStraw[x];
 			finalprob[3] *= featWood[x];
 		}
+		//And multiply by the final probability.
+		finalprob[0] *= probLinen;
+		finalprob[1] *= probSalt;
+		finalprob[2] *= probStraw;
+		finalprob[3] *= probWood;
+		
+		//Finally, find the highest probability and give us it's index.
+		double val=0;
+		double prob=finalprob[0];
+		for(int x=0; x<4; x++){
+			if(prob > finalprob[x]){
+				prob = finalprob[x];
+				val=x;
+			}
+		}
+		
+		return (double) val;
+	}
+	
+	private double determineBayes2(double[] features, String TYPE){
+		//First determine the basic probabilities of belogning to the four groups.
+		double probLinen = ((double) this.sizeLinen / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		double probSalt = (double) (this.sizeSalt / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		double probStraw = ((double) this.sizeStraw / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		double probWood = ((double) this.sizeWood / (double) (this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood));
+		
+		//Now in both cases, we want to copy our databases and floor them so that we get rid of pesky double values.
+		//They'll remain doubles becaue Java and division by int is a messy, messy thing but we want to have an easier time matching them.
+		double[][] simplifiedFlat = new double[this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood][this.flatFeatures];
+		double[][] simplifiedFFT = new double[this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood][this.FFTFeatures];
+		if(TYPE.equals("Flat")){
+			for(int x=0; x<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); x++){
+				for(int y=0; y<this.flatFeatures; y++){
+					simplifiedFlat[x][y] = Math.floor(this.flatKnowledgebase[x][y]);
+					//Addition for Flat: turn NaNs into 0s, since it'll help our approximation.
+					if(Double.isNaN(simplifiedFlat[x][y])) simplifiedFlat[x][y] = 0;
+				}
+			}
+		}
+		if(TYPE.equals("FFT")){
+			for(int x=0; x<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); x++){
+				for(int y=0; y<this.FFTFeatures; y++){
+					simplifiedFFT[x][y] = Math.floor(this.fftKnowledgebase[x][y]);
+				}
+			}
+		}
+		//Floor our base features as well for optimum matching.
+		for(int x=0; x<features.length; x++){
+			features[x] = Math.floor(features[x]);
+			//Again, turn NaNs into 0s, will help.
+			if(Double.isNaN(features[x])) features[x] = 0;
+		}
+		//Just floor ALL THE THINGS.
+		
+		//With that done, proceed to count the instances of each feature we have (from features) within the databases.
+		double[] featLinen = new double[features.length];
+		double[] featSalt = new double[features.length];
+		double[] featStraw = new double[features.length];
+		double[] featWood = new double[features.length];
+		//Addition: Set the distance to gather the data. One for Flat and one for FFT.
+		double flatDist = 0.5;
+		double fourDist = 15;
+		
+		for(int x=1; x<features.length; x++){
+			double numberLinen = 1.0;
+			double numberSalt = 1.0;
+			double numberStraw = 1.0;
+			double numberWood = 1.0;
+			for(int y=0; y<(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood); y++){
+				if(TYPE.equals("Flat")){
+					//While 'ifs' stay, we generalize them so there's a much higher chance of catching values.
+					//We've got a set distance for each data type. If the distance of the number we're comparing is equal
+					//or lower than the set distance, we consider it a 'hit'.
+					double currentDist = Math.abs(simplifiedFlat[y][x] - features[x]);
+					//System.out.println(currentDist + " vs " +flatDist); Usually 0 or 1. Very binary.
+					if(currentDist <= flatDist){
+						//System.out.println("Hit.");
+						if(y<=this.sizeLinen) numberLinen++;
+						if(y>this.sizeLinen && y<=(this.sizeLinen+this.sizeSalt)) numberSalt++;
+						if(y>(this.sizeLinen+this.sizeSalt) && y<=(this.sizeLinen+this.sizeSalt+this.sizeStraw)) numberStraw++;
+						if(y>(this.sizeLinen+this.sizeSalt+this.sizeStraw) && y<=(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood)) numberWood++;
+					}
+				}
+				if(TYPE.equals("FFT")){
+					//As above.
+					double currentDist = Math.abs(simplifiedFFT[y][x] - features[x]);
+					//System.out.println(currentDist + " vs " +fourDist); //Anywhere from 0 to 25.
+					if(currentDist <= fourDist){
+						//System.out.println("Hit.");
+						if(y<=this.sizeLinen) numberLinen++;
+						if(y>this.sizeLinen && y<=(this.sizeLinen+this.sizeSalt)) numberSalt++;
+						if(y>(this.sizeLinen+this.sizeSalt) && y<=(this.sizeLinen+this.sizeSalt+this.sizeStraw)) numberStraw++;
+						if(y>(this.sizeLinen+this.sizeSalt+this.sizeStraw) && y<=(this.sizeLinen+this.sizeSalt+this.sizeStraw+this.sizeWood)) numberWood++;
+					}
+				}
+			}
+			featLinen[x] = numberLinen / (double) this.sizeLinen;
+			featSalt[x] = numberSalt / (double) this.sizeSalt;
+			featStraw[x] = numberStraw / (double) this.sizeStraw;
+			featWood[x] = numberWood / (double) this.sizeWood;
+		}
+		//That was a handful but we have our base probabilities. Now let's calculate them into totals.
+		//Start with having each probability at "1", and we'll shrink them by way of multiplication.
+		double[] finalprob = new double[4];
+		Arrays.fill(finalprob, 1.0);
+		for(int x=1; x<features.length; x++){
+			finalprob[0] *= featLinen[x];
+			finalprob[1] *= featSalt[x];
+			finalprob[2] *= featStraw[x];
+			finalprob[3] *= featWood[x];
+		}
+
+		
 		//And multiply by the final probability.
 		finalprob[0] *= probLinen;
 		finalprob[1] *= probSalt;
