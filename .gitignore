@@ -44,3 +44,5 @@ Temporary Items
 *.idx1-ubyte
 *.idx3-ubyte
 /bin
+*.jpg
+*.bmp
