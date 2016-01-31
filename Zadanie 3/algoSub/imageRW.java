@@ -29,5 +29,18 @@ public class imageRW {
 		}
 		return intImg;
 	}
+	
+	public static void testSave(int[][] map, int xwid, int ywid, String name) throws IOException{
+		BufferedImage saveImg = new BufferedImage(xwid, ywid, BufferedImage.TYPE_INT_RGB);
+		for(int x=0;x<xwid;x++){
+			for(int y=0;y<ywid;y++){
+				Color col = new Color(map[x][y], map[x][y], map[x][y]);
+				saveImg.setRGB(x,y,col.getRGB());
+			}
+		}
+		
+		File file = new File(name);
+		ImageIO.write(saveImg, "PNG", file);
+	}
 
 }
