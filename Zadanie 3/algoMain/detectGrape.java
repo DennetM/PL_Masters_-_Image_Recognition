@@ -83,8 +83,26 @@ public class detectGrape {
 			}
 		}
 		
-		//Case B) There's a segment nearby, by a factor of a quarter of the average distances in x and y axis.
-		//B1) Below.
+		//Case B) Discard the segment if it contains more than 2% white pixels.
+		int total = 0;
+		int white = 0;
+		for(int x=0; x<this.avgGW; x++){
+			for(int y=0; y<this.avgGH; y++){
+				if(x+startx<800 && y+starty<600){
+					total++;
+					int r = this.img[0][x+startx][y+starty];
+					int g = this.img[1][x+startx][y+starty];
+					int b = this.img[2][x+startx][y+starty];
+					if(r>200 && g>200 && b>200) white++;
+				}
+			}
+		}
+		double ratio = ((double)white/(double)total)*100;
+		//System.out.println("ratio: "+ratio);
+		if(ratio>10.0) return false;
+		
+		//Case C) There's a segment nearby, by a factor of a quarter of the average distances in x and y axis.
+		//C1) Below.
 		for(int x=0; x<this.avgGW; x++){
 			for(int y=0; y<this.avgGH/4; y++){
 				if(x+startx<800 && y+starty+this.avgGH<600){
@@ -92,7 +110,7 @@ public class detectGrape {
 				}
 			}
 		}
-		//B2) To the right.
+		//C2) To the right.
 		for(int y=0; y<this.avgGH; y++){
 			for(int x=0; x<this.avgGW/4; x++){
 				if(y+starty<600 & x+startx+this.avgGW<800){
@@ -100,7 +118,7 @@ public class detectGrape {
 				}
 			}
 		}
-		//B3) Above.
+		//C3) Above.
 		for(int x=0; x<this.avgGW; x++){
 			for(int y=0; y<this.avgGH/4; y++){
 				if(x+startx<800 && starty-y>=0){
@@ -108,7 +126,7 @@ public class detectGrape {
 				}
 			}
 		}
-		//B4) To the left.
+		//C4) To the left.
 		for(int y=0; y<this.avgGH; y++){
 			for(int x=0; x<this.avgGW/4; x++){
 				if(y+starty < 600 && startx-x>=0){
