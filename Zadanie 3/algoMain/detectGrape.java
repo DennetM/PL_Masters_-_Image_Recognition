@@ -3,7 +3,7 @@ package algoMain;
 public class detectGrape {
 	
 	//Variables
-	private int[][] checkMap; //A "binary" map that exists to hold greyscale values.
+	public int[][] checkMap; //A "binary" map that exists to hold greyscale values.
 	private int[][][] img; //The image we're currently assessing.
 	private int avgGW; // average grape width;
 	private int avgGH; // average grape height;
@@ -58,10 +58,13 @@ public class detectGrape {
 						}
 					}
 					//After spawning, verify it's validity.
-					if(checkSegmentValidity(seg)){
-						//if it's true, count the green or purple.
+					if(checkSegmentValidity(x,y)){
+						//If the segment is fresh and clean, mark that we're here.
+						markSegment(x,y);
+						
+						//TODO: Write the colour-comparison function, eventually.
 					}
-					//...if not, tough luck!
+					//...if not, tough luck, we've already been to this area.
 				}
 				
 			}
@@ -69,9 +72,64 @@ public class detectGrape {
 	}
 	
 	//Helper function - checks if there's a region in the checkMap in the <custom> vincinity of the given pixel.
-	private boolean checkSegmentValidity(int[][][] seg){
-		return false;
+	private boolean checkSegmentValidity(int startx, int starty){
 		
+		//Case A) The segment is placed on an existing checkmap.
+		for(int x=0; x<this.avgGW; x++){
+			for(int y=0; x<this.avgGH; y++){
+				if(x+startx<800 && y+starty<600){
+					if(this.checkMap[x+startx][y+starty]!=0) return false;
+				}
+			}
+		}
+		
+		//Case B) There's a segment nearby, by a factor of a quarter of the average distances in x and y axis.
+		//B1) Below.
+		for(int x=0; x<this.avgGW; x++){
+			for(int y=0; y<this.avgGH/4; y++){
+				if(x+startx<800 && y+starty+this.avgGH<600){
+					if(this.checkMap[x+startx][y+starty+this.avgGH]!=0) return false;
+				}
+			}
+		}
+		//B2) To the right.
+		for(int y=0; y<this.avgGH; y++){
+			for(int x=0; x<this.avgGW/4; x++){
+				if(y+starty<600 & x+startx+this.avgGW<800){
+					if(this.checkMap[x+startx+this.avgGW][y+starty]!=0) return false;
+				}
+			}
+		}
+		//B3) Above.
+		for(int x=0; x<this.avgGW; x++){
+			for(int y=0; y<this.avgGH/4; y++){
+				if(x+startx<800 && starty-y>=0){
+					if(this.checkMap[x+startx][starty-y]!=0) return false;
+				}
+			}
+		}
+		//B4) To the left.
+		for(int y=0; y<this.avgGH; y++){
+			for(int x=0; x<this.avgGW/4; x++){
+				if(y+starty < 600 && startx-x>=0){
+					if(this.checkMap[startx-x][y+starty]!=0) return false;
+				}
+			}
+		}
+		
+		//If we didn't find any issues with it, it's considered good to go.
+		return true;
+		
+	}
+	
+	//Marks the segment we're in on the checkmap.
+	private void markSegment(int startx, int starty){
+		for(int x=0; x<this.avgGW; x++){
+			for(int y=0; y<this.avgGH; y++)
+				if(x+startx<800 && y+starty<600){
+					this.checkMap[x+startx][y+starty] = 255;
+				}
+		}
 	}
 
 }

@@ -27,10 +27,11 @@ public class imageRW {
 				intImg[2][x][y] = col.getBlue();
 			}
 		}
+		System.out.println("Image read.");
 		return intImg;
 	}
 	
-	public static void testSave(int[][] map, int xwid, int ywid, String name) throws IOException{
+	public static void checkMapSave(int[][] map, int xwid, int ywid, String name) throws IOException{
 		BufferedImage saveImg = new BufferedImage(xwid, ywid, BufferedImage.TYPE_INT_RGB);
 		for(int x=0;x<xwid;x++){
 			for(int y=0;y<ywid;y++){
