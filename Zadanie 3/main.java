@@ -10,5 +10,6 @@ public class main {
 		int[][][] img = imageRW.readImage("Wino", "count1.bmp");
 		
 		detectGrape test = new detectGrape(img, 43, 43);
+		imageRW.checkMapSave(test.checkMap, 800, 600, "testCheck.png");
 	}
 }

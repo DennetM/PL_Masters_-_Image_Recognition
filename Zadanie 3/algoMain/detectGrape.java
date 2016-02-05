@@ -50,9 +50,9 @@ public class detectGrape {
 					for(int xloc = 0; xloc<this.avgGW; xloc++){
 						for(int yloc = 0; yloc<this.avgGH; yloc++){
 							if(x+xloc<800 && y+yloc<600){
-								seg[0][x+xloc][y+yloc] = this.img[0][x+xloc][y+yloc];
-								seg[1][x+xloc][y+yloc] = this.img[1][x+xloc][y+yloc];
-								seg[2][x+xloc][y+yloc] = this.img[2][x+xloc][y+yloc];
+								seg[0][xloc][yloc] = this.img[0][x+xloc][y+yloc];
+								seg[1][xloc][yloc] = this.img[1][x+xloc][y+yloc];
+								seg[2][xloc][yloc] = this.img[2][x+xloc][y+yloc];
 								
 							}
 						}
@@ -73,10 +73,10 @@ public class detectGrape {
 	
 	//Helper function - checks if there's a region in the checkMap in the <custom> vincinity of the given pixel.
 	private boolean checkSegmentValidity(int startx, int starty){
-		
+		//System.out.println("Checking segment validity...");
 		//Case A) The segment is placed on an existing checkmap.
 		for(int x=0; x<this.avgGW; x++){
-			for(int y=0; x<this.avgGH; y++){
+			for(int y=0; y<this.avgGH; y++){
 				if(x+startx<800 && y+starty<600){
 					if(this.checkMap[x+startx][y+starty]!=0) return false;
 				}
