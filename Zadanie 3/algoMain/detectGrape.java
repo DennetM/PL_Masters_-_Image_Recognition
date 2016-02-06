@@ -79,7 +79,7 @@ public class detectGrape {
 						//System.out.println("AverageRG: "+avgRG);
 						//System.out.println("AverageGB :"+avgGB);
 						//Check for purple, since it's much easier. If it's not purple, it's green.
-						if (totalRed>avgGB && totalRed>totalGreen+10) this.numberPurpl++;
+						if (totalRed>avgGB && totalRed>totalGreen+25) this.numberPurpl++;
 						else this.numberGreen++;
 						
 						//TODO: Write the colour-comparison function, eventually.
