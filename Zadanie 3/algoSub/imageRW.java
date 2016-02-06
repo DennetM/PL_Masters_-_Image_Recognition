@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import algoMain.detectGrape;
+
 
 public class imageRW {
 	
@@ -37,6 +39,21 @@ public class imageRW {
 			for(int y=0;y<ywid;y++){
 				Color col = new Color(map[x][y], map[x][y], map[x][y]);
 				saveImg.setRGB(x,y,col.getRGB());
+			}
+		}
+		
+		File file = new File(name);
+		ImageIO.write(saveImg, "PNG", file);
+	}
+	
+	public static void saveCompound(detectGrape grep, int xwid, int ywid, String name) throws IOException{
+		BufferedImage saveImg = new BufferedImage(xwid, ywid, BufferedImage.TYPE_INT_RGB);
+		for(int x=0;x<xwid;x++){
+			for(int y=0;y<ywid;y++){
+				Color col = new Color(grep.img[0][x][y], grep.img[1][x][y], grep.img[2][x][y]);
+				if(grep.checkMap[x][y]==0) col = new Color(grep.img[0][x][y]/4, grep.img[1][x][y]/4, grep.img[2][x][y]/4);
+				
+				saveImg.setRGB(x, y, col.getRGB());
 			}
 		}
 		
