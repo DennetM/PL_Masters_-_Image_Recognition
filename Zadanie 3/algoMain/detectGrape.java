@@ -58,7 +58,7 @@ public class detectGrape {
 						}
 					}
 					//After spawning, verify it's validity.
-					if(checkSegmentValidity(x,y)){
+					if(checkSegmentValidity(x,y, this.avgGW/4, this.avgGH/4)){
 						//If the segment is fresh and clean, mark that we're here.
 						markSegment(x,y);
 						
@@ -72,7 +72,7 @@ public class detectGrape {
 	}
 	
 	//Helper function - checks if there's a region in the checkMap in the <custom> vincinity of the given pixel.
-	private boolean checkSegmentValidity(int startx, int starty){
+	private boolean checkSegmentValidity(int startx, int starty, int distx, int disty){
 		//System.out.println("Checking segment validity...");
 		//Case A) The segment is placed on an existing checkmap.
 		for(int x=0; x<this.avgGW; x++){
@@ -104,7 +104,7 @@ public class detectGrape {
 		//Case C) There's a segment nearby, by a factor of a quarter of the average distances in x and y axis.
 		//C1) Below.
 		for(int x=0; x<this.avgGW; x++){
-			for(int y=0; y<this.avgGH/4; y++){
+			for(int y=0; y<disty; y++){
 				if(x+startx<800 && y+starty+this.avgGH<600){
 					if(this.checkMap[x+startx][y+starty+this.avgGH]!=0) return false;
 				}
@@ -112,7 +112,7 @@ public class detectGrape {
 		}
 		//C2) To the right.
 		for(int y=0; y<this.avgGH; y++){
-			for(int x=0; x<this.avgGW/4; x++){
+			for(int x=0; x<distx; x++){
 				if(y+starty<600 & x+startx+this.avgGW<800){
 					if(this.checkMap[x+startx+this.avgGW][y+starty]!=0) return false;
 				}
@@ -120,7 +120,7 @@ public class detectGrape {
 		}
 		//C3) Above.
 		for(int x=0; x<this.avgGW; x++){
-			for(int y=0; y<this.avgGH/4; y++){
+			for(int y=0; y<disty; y++){
 				if(x+startx<800 && starty-y>=0){
 					if(this.checkMap[x+startx][starty-y]!=0) return false;
 				}
@@ -128,9 +128,41 @@ public class detectGrape {
 		}
 		//C4) To the left.
 		for(int y=0; y<this.avgGH; y++){
-			for(int x=0; x<this.avgGW/4; x++){
+			for(int x=0; x<distx; x++){
 				if(y+starty < 600 && startx-x>=0){
 					if(this.checkMap[startx-x][y+starty]!=0) return false;
+				}
+			}
+		}
+		//C5)Edge - top left.
+		for(int x=0; x<distx; x++){
+			for(int y=0; y<disty; y++){
+				if(starty-y>=0 && startx-x>=0){
+					if(this.checkMap[startx-x][starty-y]!=0) return false;
+				}
+			}
+		}
+		//C6)Edge - top right.
+		for(int x=0; x<distx; x++){
+			for(int y=0; y<disty; y++){
+				if(x+startx+this.avgGW < 800 && starty-y>=0){
+					if(this.checkMap[startx+x+this.avgGW][starty-y]!=0) return false;
+				}
+			}
+		}
+		//C7) Edge - bottom left
+		for(int x=0; x<distx; x++){
+			for(int y=0; y<disty; y++){
+				if(startx-x>=0 && starty+y < 600){
+					if(this.checkMap[startx-x][starty+y]!=0) return false;
+				}
+			}
+		}
+		//C8) Edge - bottom right.
+		for(int x=0; x<distx; x++){
+			for(int y=0; y<disty; y++){
+				if(x+startx+this.avgGW<800 && y+starty+this.avgGH<600){
+					if(this.checkMap[x+startx+this.avgGW][y+starty+this.avgGH]!=0) return false;
 				}
 			}
 		}
