@@ -205,7 +205,29 @@ public class detectNut {
 		//If the circle fits the nut thoroughly (as in, the whitness level is low), then we consider it a light nut.
 		//If the lightness level is higher than, say, ~30%, it means the circle didn't entirely fit and we got an oblong nut.
 		private void countOblong(int startx, int starty){
+			int radius = (this.avgGH + this.avgGW)/2;
+			int total = 0;
+			int white = 0;
+			int centerx = startx+this.avgGW;
+			int centery = starty+(this.avgGH/2);
 			
+			for(int y=-radius; y<radius; y++){
+				for(int x=-radius; x<radius; x++){
+					if(x*x+y*y <= radius*radius){
+						if(centerx+x>=0 && centery+y>=0 && centerx+x<800 && centery+y<562){
+							total++;
+							int r = this.img[0][x+centerx][y+centery];
+							int g = this.img[1][x+centerx][y+centery];
+							int b = this.img[2][x+centerx][y+centery];
+							if(r>190 && g>190 && b>190) white++;
+						}
+					}
+				}
+			}
+			double ratio = ((double)white/(double)total)*100;
+			//System.out.println("ratio: "+ratio);
+			if(ratio<40.2) this.numberLight++;
+			else this.numberCurve++;
 		}
 
 }
