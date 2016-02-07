@@ -19,6 +19,7 @@ public class imageRW {
 	//The table's first column is the channel switch. 0 - red, 1 - green, 2 - blue.
 	public static int[][][] readImage(String type, String filename) throws IOException{
 		String path = type+"/"+filename;
+		//String path = filename;
 		BufferedImage img = ImageIO.read(new File(path));
 		int[][][] intImg = new int[3][img.getWidth()][img.getHeight()];
 		
