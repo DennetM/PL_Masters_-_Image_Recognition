@@ -74,15 +74,12 @@ public class detectGrape {
 						//And now, our grapes are un-uniform fuckers. The purple we're dealing with is muddy,
 						//meaning it's red value is high but green and blue are about even.
 						//The green is also a reddish one, so it's green and red values are high while blue is insignificant.
-						int avgRG = (totalRed+totalGreen)/2;
 						int avgGB = (totalGreen+totalBlue)/2;
 						//System.out.println("AverageRG: "+avgRG);
 						//System.out.println("AverageGB :"+avgGB);
 						//Check for purple, since it's much easier. If it's not purple, it's green.
 						if (totalRed>avgGB && totalRed>totalGreen+25) this.numberPurpl++;
 						else this.numberGreen++;
-						
-						//TODO: Write the colour-comparison function, eventually.
 					}
 					//...if not, tough luck, we've already been to this area.
 				}

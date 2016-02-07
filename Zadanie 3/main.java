@@ -1,16 +1,16 @@
 import java.io.IOException;
 
-import algoMain.detectGrape;
+import algoMain.detectNut;
 import algoSub.imageRW;
 
 
 public class main {
 
 	public static void main(String[] args) throws IOException{
-		int[][][] img = imageRW.readImage("Wino", "count13.bmp");
+		int[][][] img = imageRW.readImage("OreNew", "3.jpg");
 		
-		detectGrape test = new detectGrape(img, 52, 52, 2);
+		detectNut test = new detectNut(img, 24, 24, 15, 30);
 		//imageRW.checkMapSave(test.checkMap, 800, 600, "testCheck.png");
-		imageRW.saveCompound(test, 800, 600, "compound.png");
+		imageRW.saveCompound(test, 800, 562, "compound.png");
 	}
 }
