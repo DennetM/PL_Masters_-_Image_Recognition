@@ -14,6 +14,9 @@ public class detectNut {
 		public int numberLight =0; //number of reverse-racist nuts.
 		public int numberCurve =0; //number of curved nuts.
 		
+		private double darkDistance =122.995; //The distance of a dark colour from our RGB zeropoint (0,0,0).
+		//private double lightDistance =225.869; //The distance of a light colour from our RGB zeropoint (0,0,0).
+		
 		//Constructor - take in the image to test and the user-created average grape width and height.
 		public detectNut(int[][][] img, int x, int y, double cutoff, int distance){
 			this.img = img;
@@ -22,7 +25,7 @@ public class detectNut {
 			
 			this.checkMap = new int[800][562]; //Fill it flatly, each grape image is standarized.
 			
-			countGrapes(cutoff, distance); //Immedaitelly count them, no need to wait.
+			countNuts(cutoff, distance); //Immedaitelly count them, no need to wait.
 			
 			System.out.println("Nuts counted for image. The results are in.");
 			System.out.println("Number of dark nuts: "+this.numberDark);
@@ -38,7 +41,7 @@ public class detectNut {
 		//To prevent double-checking, we have to check two things. A) In the new checkbox, did we reach a previous one?
 		//														   B) Is the new checkbox within X distance of another one?
 		//Of course, the latter is set by us and has to be somewhat adjusted based on the minimal grape size, but that's fine-tuning.
-		private void countGrapes(double thresh, int dist){
+		private void countNuts(double thresh, int dist){
 			//First loop set. Scan. By height.
 			for(int x=0; x<800; x++){
 				for(int y=0; y<562; y++){
@@ -49,10 +52,6 @@ public class detectNut {
 					int b = this.img[2][x][y];
 					int arg = (r+g)/2;
 					int agb = (g+b)/2;
-					int abr = (b+r)/2;
-					int rg = Math.abs(this.img[0][x][y] - this.img[1][x][y]);
-					int gb = Math.abs(this.img[1][x][y] - this.img[2][x][y]);
-					int br = Math.abs(this.img[2][x][y] - this.img[0][x][y]);
 					
 					if((arg>b+30) || (r>agb+40)){
 						//If the segment ain't some shade of green, let's start considering it.
@@ -78,18 +77,11 @@ public class detectNut {
 							totalRed/=hash;
 							totalGreen/=hash;
 							totalBlue/=hash;
-							//System.out.println("totalRed: "+totalRed);
-							//System.out.println("totalGreen: "+totalGreen);
-							//System.out.println("totalBlue: "+totalBlue);
-							//And now, our grapes are un-uniform fuckers. The purple we're dealing with is muddy,
-							//meaning it's red value is high but green and blue are about even.
-							//The green is also a reddish one, so it's green and red values are high while blue is insignificant.
-							int avgGB = (totalGreen+totalBlue)/2;
-							//System.out.println("AverageRG: "+avgRG);
-							//System.out.println("AverageGB :"+avgGB);
-							//Check for purple, since it's much easier. If it's not purple, it's green.
-							if (totalRed>avgGB && totalRed>totalGreen+25) this.numberLight++;
-							else this.numberDark++;
+							double currentDist = Math.sqrt((totalRed*totalRed)+(totalGreen*totalGreen)+(totalBlue*totalBlue));
+							//And now the colour detection strikes again.
+							if(currentDist>this.darkDistance-40 && currentDist<this.darkDistance+40) this.numberDark++;
+							else countOblong(x, y);
+							
 						}
 						//...if not, tough luck, we've already been to this area.
 					}
@@ -120,7 +112,7 @@ public class detectNut {
 						int r = this.img[0][x+startx][y+starty];
 						int g = this.img[1][x+startx][y+starty];
 						int b = this.img[2][x+startx][y+starty];
-						if(r>200 && g>200 && b>200) white++;
+						if(r>190 && g>190 && b>190) white++;
 					}
 				}
 			}
@@ -207,6 +199,13 @@ public class detectNut {
 						this.checkMap[x+startx][y+starty] = 255;
 					}
 			}
+		}
+		
+		//Count oblong - this function attempts to draw a circle starting at the middle-right side of the detected sector.
+		//If the circle fits the nut thoroughly (as in, the whitness level is low), then we consider it a light nut.
+		//If the lightness level is higher than, say, ~30%, it means the circle didn't entirely fit and we got an oblong nut.
+		private void countOblong(int startx, int starty){
+			
 		}
 
 }
